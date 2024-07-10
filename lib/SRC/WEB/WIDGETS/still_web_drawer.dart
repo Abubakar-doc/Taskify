@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:taskify/SRC/WEB/SCREENS/manage_department.dart';
-import 'package:taskify/SRC/WEB/SCREENS/manage_member.dart';
-import 'package:taskify/SRC/WEB/SCREENS/manage_reports.dart';
-import 'package:taskify/SRC/WEB/SCREENS/manage_settings.dart';
-import 'package:taskify/SRC/WEB/SCREENS/manage_tasks.dart';
-import 'package:taskify/SRC/WEB/SCREENS/overview.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/manage_department.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/manage_member.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/manage_reports.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/manage_settings.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/manage_tasks.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/overview.dart';
 import 'package:taskify/THEME/theme.dart';
 
 class DrawerWidget extends StatelessWidget {
