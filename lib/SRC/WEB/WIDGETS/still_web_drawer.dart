@@ -40,7 +40,7 @@ class DrawerWidget extends StatelessWidget {
           children: [
             HoverableListItem(
               title: 'Overview',
-              onTap: () => onItemTapped(0, const Overview()),
+              onTap: () => onItemTapped(0, Overview(onItemTapped: onItemTapped)),
               icon: const Icon(Icons.dashboard),
               isSelected: selectedIndex == 0,
             ),

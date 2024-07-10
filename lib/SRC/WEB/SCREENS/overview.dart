@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/THEME/theme.dart';
+import 'manage_department.dart';
+import 'manage_member.dart';
+import 'manage_reports.dart';
+import 'manage_settings.dart';
+import 'manage_tasks.dart';
 
 class Overview extends StatefulWidget {
-  const Overview({Key? key}) : super(key: key);
+  final Function(int, Widget) onItemTapped;
+
+  const Overview({Key? key, required this.onItemTapped}) : super(key: key);
 
   @override
   State<Overview> createState() => _OverviewState();
@@ -20,7 +27,9 @@ class _OverviewState extends State<Overview> {
                 child: DashboardCard(
                   title: 'View Departments',
                   buttonText: 'Go to Departments',
-                  onPressed: () {},
+                  onPressed: () {
+                    widget.onItemTapped(1, const ManageDepartment());
+                  },
                 ),
               ),
               const SizedBox(width: 20),
@@ -28,7 +37,9 @@ class _OverviewState extends State<Overview> {
                 child: DashboardCard(
                   title: 'View Members',
                   buttonText: 'Go to Members',
-                  onPressed: () {},
+                  onPressed: () {
+                    widget.onItemTapped(2, const ManageMember());
+                  },
                 ),
               ),
             ],
@@ -42,7 +53,9 @@ class _OverviewState extends State<Overview> {
                 child: DashboardCard(
                   title: 'View Tasks',
                   buttonText: 'Go to Tasks',
-                  onPressed: () {},
+                  onPressed: () {
+                    widget.onItemTapped(3, const ManageTasks());
+                  },
                 ),
               ),
               const SizedBox(width: 20),
@@ -50,7 +63,9 @@ class _OverviewState extends State<Overview> {
                 child: DashboardCard(
                   title: 'View Reports',
                   buttonText: 'Go to Reports',
-                  onPressed: () {},
+                  onPressed: () {
+                    widget.onItemTapped(4, const ManageReports());
+                  },
                 ),
               ),
             ],
@@ -61,7 +76,9 @@ class _OverviewState extends State<Overview> {
           child: DashboardCard(
             title: 'View Other Actions',
             buttonText: 'Go to Settings',
-            onPressed: () {},
+            onPressed: () {
+              widget.onItemTapped(5, const Settings());
+            },
           ),
         ),
       ],
@@ -75,7 +92,8 @@ class DashboardCard extends StatelessWidget {
   final String buttonText;
   final VoidCallback onPressed;
 
-  const DashboardCard({super.key,
+  const DashboardCard({
+    super.key,
     required this.title,
     required this.buttonText,
     required this.onPressed,
@@ -118,13 +136,15 @@ class HoverableElevatedButton extends StatefulWidget {
   final String text;
   final VoidCallback onPressed;
 
-  const HoverableElevatedButton({super.key,
+  const HoverableElevatedButton({
+    super.key,
     required this.text,
     required this.onPressed,
   });
 
   @override
-  _HoverableElevatedButtonState createState() => _HoverableElevatedButtonState();
+  _HoverableElevatedButtonState createState() =>
+      _HoverableElevatedButtonState();
 }
 
 class _HoverableElevatedButtonState extends State<HoverableElevatedButton> {
@@ -137,7 +157,8 @@ class _HoverableElevatedButtonState extends State<HoverableElevatedButton> {
       onExit: (_) => _mouseEnter(false),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: _isHovered ? customAqua.withOpacity(0.8) : customAqua,
+          backgroundColor:
+              _isHovered ? customAqua.withOpacity(0.8) : customAqua,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(6),
           ),
@@ -164,5 +185,3 @@ class _HoverableElevatedButtonState extends State<HoverableElevatedButton> {
     });
   }
 }
-
-

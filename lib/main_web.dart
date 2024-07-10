@@ -13,7 +13,13 @@ class WebHomePage extends StatefulWidget {
 
 class _WebHomePageState extends State<WebHomePage> {
   int _selectedIndex = 0;
-  Widget _selectedWidget = const Overview();
+  late Widget _selectedWidget;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedWidget = Overview(onItemTapped: _onItemTapped);
+  }
 
   void _onItemTapped(int index, Widget widget) {
     setState(() {
