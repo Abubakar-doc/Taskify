@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskify/SRC/WEB/SECTIONS/manage_department.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/manage_department.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/manage_member.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/manage_reports.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/manage_settings.dart';
@@ -46,7 +46,7 @@ class DrawerWidget extends StatelessWidget {
             ),
             HoverableListItem(
               title: 'Manage Departments',
-              onTap: () => onItemTapped(1, const ManageDepartment()),
+              onTap: () => onItemTapped(1, ManageDepartment()),
               icon: const Icon(Icons.business),
               isSelected: selectedIndex == 1,
             ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/manage_reports.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/manage_tasks.dart';
+import 'package:taskify/SRC/WEB/WIDGETS/hoverable_stretched_aqua_button.dart';
 import 'package:taskify/THEME/theme.dart';
-import 'manage_department.dart';
+import 'DEPARTMENT/manage_department.dart';
 import 'manage_member.dart';
 import 'manage_settings.dart';
 
@@ -28,7 +29,7 @@ class _OverviewState extends State<Overview> {
                   title: 'View Departments',
                   buttonText: 'Go to Departments',
                   onPressed: () {
-                    widget.onItemTapped(1, const ManageDepartment());
+                    widget.onItemTapped(1, ManageDepartment());
                   },
                 ),
               ),
@@ -128,60 +129,5 @@ class DashboardCard extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-
-class HoverableElevatedButton extends StatefulWidget {
-  final String text;
-  final VoidCallback onPressed;
-
-  const HoverableElevatedButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-  });
-
-  @override
-  _HoverableElevatedButtonState createState() =>
-      _HoverableElevatedButtonState();
-}
-
-class _HoverableElevatedButtonState extends State<HoverableElevatedButton> {
-  bool _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => _mouseEnter(true),
-      onExit: (_) => _mouseEnter(false),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor:
-              _isHovered ? customAqua.withOpacity(0.8) : customAqua,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-        ),
-        onPressed: widget.onPressed,
-        child: Container(
-          width: double.infinity,
-          alignment: Alignment.center,
-          child: Text(
-            widget.text,
-            style: const TextStyle(
-              color: Colors.black,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _mouseEnter(bool isHovered) {
-    setState(() {
-      _isHovered = isHovered;
-    });
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/WEB/SCREENS/admin_panel.dart';
 import 'package:taskify/SRC/WEB/SCREENS/login.dart';
 import 'package:taskify/SRC/WEB/SCREENS/welcome.dart';
 
@@ -19,8 +20,8 @@ class _WebHomePageState extends State<WebHomePage> {
   @override
   Widget build(BuildContext context) {
     // return WelcomeScreen();
-    return LoginScreen();
-    // return const AdminPanel();
+    // return LoginScreen();
+    return const AdminPanel();
   }
 }
 
