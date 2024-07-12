@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/THEME/theme.dart';
+import 'package:drop_down_search_field/drop_down_search_field.dart';
 
 class AddMembersInDepartmentWidget extends StatefulWidget {
   @override
@@ -18,7 +19,8 @@ class _AddMembersInDepartmentWidgetState
   List<Map<String, String>> memberList = [
     {'name': 'John Doe', 'email': 'john.doe@example.com'},
     {'name': 'Jane Smith', 'email': 'jane.smith@example.com'},
-    {'name': 'Mike Johnson', 'email': 'mike.johnson@example.com'},
+    {'name': 'ada Johnson', 'email': 'mike.johnson@example.com'},
+    {'name': 'bhalu Johnson', 'email': 'mike.johnson@example.com'},
   ];
 
   String? selectedDepartment;
@@ -40,6 +42,19 @@ class _AddMembersInDepartmentWidgetState
       selectedDepartment = null;
       selectedMember = {};
     });
+  }
+
+  List<String> getDepartmentSuggestions(String query) {
+    return departmentList
+        .where((dept) => dept.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+  }
+
+  List<Map<String, String>> getMemberSuggestions(String query) {
+    return memberList
+        .where((member) =>
+            member['name']!.toLowerCase().contains(query.toLowerCase()))
+        .toList();
   }
 
   @override
@@ -66,72 +81,41 @@ class _AddMembersInDepartmentWidgetState
             ),
           ),
           const SizedBox(height: 16),
-          Autocomplete<String>(
-            optionsBuilder: (TextEditingValue textEditingValue) {
-              if (textEditingValue.text.isEmpty) {
-                return const Iterable<String>.empty();
-              }
-              return departmentList.where((dept) =>
-                  dept.toLowerCase().contains(textEditingValue.text.toLowerCase()));
+          DropDownSearchFormField(
+            textFieldConfiguration: TextFieldConfiguration(
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: customLightGrey,
+                hintText: 'Search Department',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+              ),
+              controller: _departmentController,
+            ),
+            suggestionsCallback: (pattern) {
+              return getDepartmentSuggestions(pattern);
             },
-            onSelected: (String dept) {
+            itemBuilder: (context, String suggestion) {
+              return ListTile(
+                title: Text(suggestion),
+              );
+            },
+            itemSeparatorBuilder: (context, index) {
+              return const Divider();
+            },
+            transitionBuilder: (context, suggestionsBox, controller) {
+              return suggestionsBox;
+            },
+            onSuggestionSelected: (String suggestion) {
               setState(() {
-                selectedDepartment = dept;
+                selectedDepartment = suggestion;
+                _departmentController.text = suggestion;
               });
             },
-            optionsViewBuilder: (BuildContext context,
-                AutocompleteOnSelected<String> onSelected,
-                Iterable<String> options) {
-              return Container(
-                width: MediaQuery.of(context).size.width * 0.5, // Adjust width
-                color: customLightGrey, // Background color for options
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: options
-                        .map((dept) => Column(
-                      children: [
-                        ListTile(
-                          title: Text(dept),
-                          onTap: () {
-                            onSelected(dept);
-                          },
-                        ),
-                        Divider(height: 0.5, color: Colors.grey), // Divider
-                      ],
-                    ))
-                        .toList(),
-                  ),
-                ),
-              );
-            },
-            displayStringForOption: (String dept) => dept,
-            fieldViewBuilder: (BuildContext context,
-                TextEditingController textEditingController,
-                FocusNode focusNode,
-                VoidCallback onFieldSubmitted) {
-              _departmentController = textEditingController;
-              return TextField(
-                controller: textEditingController,
-                focusNode: focusNode,
-                onChanged: (value) {
-                  setState(() {
-                    selectedDepartment = null;
-                  });
-                },
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: customLightGrey,
-                  hintText: 'Search Department',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12.0),
-                ),
-                style: const TextStyle(color: Colors.white),
-              );
-            },
+            displayAllSuggestionWhenTap: true,
           ),
           const SizedBox(height: 16),
           const Text(
@@ -142,79 +126,49 @@ class _AddMembersInDepartmentWidgetState
             ),
           ),
           const SizedBox(height: 16),
-          Autocomplete<Map<String, String>>(
-            optionsBuilder: (TextEditingValue textEditingValue) {
-              if (textEditingValue.text.isEmpty) {
-                return const Iterable<Map<String, String>>.empty();
-              }
-              return memberList.where((member) =>
-                  member['name']!
-                      .toLowerCase()
-                      .contains(textEditingValue.text.toLowerCase()));
+          DropDownSearchFormField(
+            textFieldConfiguration: TextFieldConfiguration(
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: customLightGrey,
+                hintText: 'Search Member',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+              ),
+              controller: _memberController,
+            ),
+            suggestionsCallback: (pattern) {
+              return getMemberSuggestions(pattern)
+                  .map((member) => member['name']!)
+                  .toList();
             },
-            onSelected: (Map<String, String> member) {
+            itemBuilder: (context, String suggestion) {
+              final member = memberList
+                  .firstWhere((member) => member['name'] == suggestion);
+              return ListTile(
+                title: Text(suggestion),
+                subtitle: Text(member['email']!),
+              );
+            },
+            itemSeparatorBuilder: (context, index) {
+              return const Divider();
+            },
+            transitionBuilder: (context, suggestionsBox, controller) {
+              return suggestionsBox;
+            },
+            onSuggestionSelected: (String suggestion) {
+              final member = memberList
+                  .firstWhere((member) => member['name'] == suggestion);
               setState(() {
                 selectedMember = member;
                 _memberController.text = member['name']!;
                 _memberEmailController.text = member['email']!;
               });
             },
-            optionsViewBuilder: (BuildContext context,
-                AutocompleteOnSelected<Map<String, String>> onSelected,
-                Iterable<Map<String, String>> options) {
-              return Container(
-                width: MediaQuery.of(context).size.width * 0.5, // Adjust width
-                color: customLightGrey, // Background color for options
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: options
-                        .map((member) => Column(
-                      children: [
-                        ListTile(
-                          title: Text(member['name']!),
-                          subtitle: Text(member['email']!),
-                          onTap: () {
-                            onSelected(member);
-                          },
-                        ),
-                        Divider(height: 0.5, color: Colors.grey), // Divider
-                      ],
-                    ))
-                        .toList(),
-                  ),
-                ),
-              );
-            },
-            displayStringForOption: (Map<String, String> member) =>
-            member['name']!,
-            fieldViewBuilder: (BuildContext context,
-                TextEditingController textEditingController,
-                FocusNode focusNode,
-                VoidCallback onFieldSubmitted) {
-              _memberController = textEditingController;
-              return TextField(
-                controller: textEditingController,
-                focusNode: focusNode,
-                onChanged: (value) {
-                  setState(() {
-                    selectedMember = {};
-                    _memberEmailController.clear();
-                  });
-                },
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: customLightGrey,
-                  hintText: 'Search Member',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12.0),
-                ),
-                style: const TextStyle(color: Colors.white),
-              );
-            },
+            displayAllSuggestionWhenTap: true,
           ),
           const SizedBox(height: 8),
           TextField(
