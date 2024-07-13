@@ -4,7 +4,9 @@ import 'package:taskify/SRC/WEB/SCREENS/login.dart';
 import 'package:taskify/THEME/theme.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  bool _isHovered = false;
+  final bool _isHovered = false;
+
+  const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

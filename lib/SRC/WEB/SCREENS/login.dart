@@ -3,7 +3,9 @@ import 'package:taskify/SRC/WEB/SCREENS/admin_panel.dart';
 import 'package:taskify/THEME/theme.dart';
 
 class LoginScreen extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>(); // Key to identify the form
+  final _formKey = GlobalKey<FormState>();
+
+  LoginScreen({super.key}); // Key to identify the form
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +86,8 @@ class LoginScreen extends StatelessWidget {
                         },
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all(customAqua),
-                          shape: MaterialStateProperty.all(
+                              WidgetStateProperty.all(customAqua),
+                          shape: WidgetStateProperty.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0),
                             ),

@@ -5,7 +5,7 @@ import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/widgets/3_add_members_in_dep
 import 'package:taskify/SRC/WEB/WIDGETS/small_widgets.dart';
 
 class ManageDepartment extends StatefulWidget {
-  ManageDepartment({Key? key}) : super(key: key);
+  const ManageDepartment({super.key});
 
   @override
   State<ManageDepartment> createState() => _ManageDepartmentState();
@@ -23,15 +23,15 @@ class _ManageDepartmentState extends State<ManageDepartment> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topLeft,
-      child: SingleChildScrollView(
+      child: const SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CreateDepartmentWidget(),
-            const divider(),
+            divider(),
             ViewEditSearchDepartmentsWidget(),
-            const divider(),
+            divider(),
             AddMembersInDepartmentWidget(),
           ],
         ),

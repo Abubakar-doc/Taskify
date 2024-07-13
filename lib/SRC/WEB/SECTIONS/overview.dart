@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/manage_reports.dart';
-import 'package:taskify/SRC/WEB/SECTIONS/manage_tasks.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/TASK/manage_tasks.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/hoverable_stretched_aqua_button.dart';
 import 'package:taskify/THEME/theme.dart';
 import 'DEPARTMENT/manage_department.dart';
@@ -10,7 +10,7 @@ import 'manage_settings.dart';
 class Overview extends StatefulWidget {
   final Function(int, Widget) onItemTapped;
 
-  const Overview({Key? key, required this.onItemTapped}) : super(key: key);
+  const Overview({super.key, required this.onItemTapped});
 
   @override
   State<Overview> createState() => _OverviewState();
@@ -29,7 +29,7 @@ class _OverviewState extends State<Overview> {
                   title: 'View Departments',
                   buttonText: 'Go to Departments',
                   onPressed: () {
-                    widget.onItemTapped(1, ManageDepartment());
+                    widget.onItemTapped(1, const ManageDepartment());
                   },
                 ),
               ),

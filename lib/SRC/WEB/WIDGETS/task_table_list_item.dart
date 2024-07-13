@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/THEME/theme.dart';
 
-class DepartmentListItem extends StatelessWidget {
+class TaskListItem extends StatelessWidget {
   final String name;
+  final String description;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
-  const DepartmentListItem({super.key, required this.name, this.onEdit, this.onDelete});
+  const TaskListItem({super.key, required this.name, required this.description, this.onEdit, this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,8 @@ class DepartmentListItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildCell(name), // Department name cell
+              _buildCell(name), // Task name cell
+              _buildCell(description), // Task description cell
               _buildActionsCell(), // Actions cell
             ],
           ),

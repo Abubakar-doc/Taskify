@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/SRC/WEB/SCREENS/admin_panel.dart';
-import 'package:taskify/SRC/WEB/SCREENS/login.dart';
-import 'package:taskify/SRC/WEB/SCREENS/welcome.dart';
 
 class WebHomePage extends StatefulWidget {
   const WebHomePage({super.key});

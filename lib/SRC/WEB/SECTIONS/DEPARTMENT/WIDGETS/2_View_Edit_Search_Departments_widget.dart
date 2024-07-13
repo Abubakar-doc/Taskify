@@ -3,6 +3,8 @@ import 'package:taskify/SRC/WEB/WIDGETS/department_table_list_item.dart';
 import 'package:taskify/THEME/theme.dart';
 
 class ViewEditSearchDepartmentsWidget extends StatefulWidget {
+  const ViewEditSearchDepartmentsWidget({super.key});
+
   @override
   _ViewEditSearchDepartmentsWidgetState createState() => _ViewEditSearchDepartmentsWidgetState();
 }

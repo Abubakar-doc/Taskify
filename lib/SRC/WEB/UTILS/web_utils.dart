@@ -20,7 +20,7 @@ class WebUtils {
     _removeToast();
 
     // Create a GlobalKey for the container to access its size
-    GlobalKey _containerKey = GlobalKey();
+    GlobalKey containerKey = GlobalKey();
 
     _overlayEntry = OverlayEntry(
       builder: (BuildContext context) {
@@ -29,15 +29,15 @@ class WebUtils {
           right: 20.0,
           child: TweenAnimationBuilder<double>(
             tween: Tween(begin: 0.0, end: 1.0),
-            duration: Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 200),
             builder: (context, value, child) {
               return Opacity(
                 opacity: value,
                 child: Transform.translate(
                   offset: Offset(0.0, (1 - value) * 20),
                   child: AnimatedContainer(
-                    key: _containerKey,
-                    duration: Duration(milliseconds: 200),
+                    key: containerKey,
+                    duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
                       color: color,
@@ -75,7 +75,7 @@ class WebUtils {
       },
     );
 
-    Overlay.of(context)?.insert(_overlayEntry!);
+    Overlay.of(context).insert(_overlayEntry!);
 
     // Schedule removal after 4 seconds
     Future.delayed(const Duration(seconds: 5), () {
