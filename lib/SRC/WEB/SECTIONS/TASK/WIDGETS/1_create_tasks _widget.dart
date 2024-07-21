@@ -64,7 +64,7 @@ class _CreateTasksWidgetState extends State<CreateTasksWidget> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: customLightGrey,
-                hintText: 'Task Description',
+                hintText: 'Task Description (Optional)',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                   borderSide: BorderSide.none,

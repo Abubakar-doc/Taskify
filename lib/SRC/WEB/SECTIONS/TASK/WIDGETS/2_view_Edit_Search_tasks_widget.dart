@@ -200,7 +200,7 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
   void _editTask(int index) {
     TextEditingController nameController = TextEditingController(text: filteredTasks[index]['name']);
     TextEditingController descriptionController = TextEditingController(text: filteredTasks[index]['description']);
-    bool _isNameEmpty = false;
+    bool isNameEmpty = false;
 
     showDialog(
       context: context,
@@ -218,11 +218,11 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
                     decoration: InputDecoration(
                       labelText: 'New Task Name',
                       border: const OutlineInputBorder(),
-                      errorText: _isNameEmpty ? 'Task name cannot be empty' : null,
+                      errorText: isNameEmpty ? 'Task name cannot be empty' : null,
                     ),
                     onChanged: (value) {
                       setState(() {
-                        _isNameEmpty = value.trim().isEmpty;
+                        isNameEmpty = value.trim().isEmpty;
                       });
                     },
                   ),
@@ -252,7 +252,7 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
               onPressed: () {
                 if (nameController.text.trim().isEmpty) {
                   setState(() {
-                    _isNameEmpty = true;
+                    isNameEmpty = true;
                   });
                 } else {
                   setState(() {

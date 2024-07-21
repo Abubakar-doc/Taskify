@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/small_widgets.dart';
 
 import 'WIDGETS/1_create_tasks _widget.dart';
-import 'WIDGETS/2_View_Edit_Search_tasks_widget.dart';
+import 'WIDGETS/2_view_Edit_Search_tasks_widget.dart';
+import 'WIDGETS/3_assign_task_to_members_Widget.dart';
+import 'WIDGETS/4_evaluate_tasks.dart';
 
 class ManageTasks extends StatefulWidget {
   const ManageTasks({super.key});
@@ -31,6 +33,10 @@ class _ManageTasksState extends State<ManageTasks> {
             CreateTasksWidget(),
             divider(),
             ViewEditSearchTasksWidget(),
+            divider(),
+            AssignTasksToMembersWidget(),
+            divider(),
+            EvaluateTasksWidget()
           ],
         ),
       ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/manage_department.dart';
-import 'package:taskify/SRC/WEB/SECTIONS/manage_member.dart';
-import 'package:taskify/SRC/WEB/SECTIONS/manage_reports.dart';
-import 'package:taskify/SRC/WEB/SECTIONS/manage_settings.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/MEMBER/manage_member.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/REPORT/manage_reports.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/SETTINGS/manage_settings.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/TASK/manage_tasks.dart';
-import 'package:taskify/SRC/WEB/SECTIONS/overview.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/OVERVIEW/overview.dart';
 import 'package:taskify/THEME/theme.dart';
 
 class DrawerWidget extends StatelessWidget {
@@ -38,92 +38,183 @@ class DrawerWidget extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            HoverableListItem(
+            buildTile(
+              context,
               title: 'Overview',
-              onTap: () => onItemTapped(0, Overview(onItemTapped: onItemTapped)),
-              icon: const Icon(Icons.dashboard),
-              isSelected: selectedIndex == 0,
+              icon: Icons.dashboard,
+              index: 0,
+              widget: Overview(onItemTapped: onItemTapped),
             ),
-            HoverableListItem(
+            buildExpansionTile(
+              context,
               title: 'Manage Departments',
-              onTap: () => onItemTapped(1, const ManageDepartment()),
-              icon: const Icon(Icons.business),
-              isSelected: selectedIndex == 1,
+              icon: Icons.business,
+              indices: [1, 2, 3],
+              children: [
+                buildChildTile(
+                  context,
+                  title: 'Create Department',
+                  icon: Icons.add,
+                  index: 1,
+                  widget: const ManageDepartment(),
+                ),
+                buildChildTile(
+                  context,
+                  title: 'View Departments',
+                  icon: Icons.remove_red_eye,
+                  index: 2,
+                  widget: const ManageDepartment(),
+                ),
+                buildChildTile(
+                  context,
+                  title: 'Add Members in Department',
+                  icon: Icons.add_box_outlined,
+                  index: 3,
+                  widget: const ManageDepartment(),
+                ),
+              ],
             ),
-            HoverableListItem(
+            buildExpansionTile(
+              context,
               title: 'Manage Members',
-              onTap: () => onItemTapped(2, const ManageMember()),
-              icon: const Icon(Icons.person),
-              isSelected: selectedIndex == 2,
+              icon: Icons.person,
+              indices: [4,5],
+              children: [
+                buildChildTile(
+                  context,
+                  title: 'Approve New User Registrations',
+                  icon: Icons.check,
+                  index: 4,
+                  widget: const ManageMember(),
+                ),
+                buildChildTile(
+                  context,
+                  title: 'View Assigned Tasks to Members',
+                  icon: Icons.remove_red_eye,
+                  index: 5,
+                  widget: const ManageMember(),
+                ),
+              ],
             ),
-            HoverableListItem(
+            buildExpansionTile(
+              context,
               title: 'Manage Tasks',
-              onTap: () => onItemTapped(3, const ManageTasks()),
-              icon: const Icon(Icons.task),
-              isSelected: selectedIndex == 3,
+              icon: Icons.task,
+              indices: [6, 7, 8, 9],
+              children: [
+                buildChildTile(
+                  context,
+                  title: 'Create Tasks',
+                  icon: Icons.add,
+                  index: 6,
+                  widget: const ManageTasks(),
+                ),
+                buildChildTile(
+                  context,
+                  title: 'View Tasks',
+                  icon: Icons.remove_red_eye,
+                  index: 7,
+                  widget: const ManageTasks(),
+                ),
+                buildChildTile(
+                  context,
+                  title: 'Assign Tasks to Members',
+                  icon: Icons.add_box_outlined,
+                  index: 8,
+                  widget: const ManageTasks(),
+                ),
+                buildChildTile(
+                  context,
+                  title: 'Evaluate Tasks',
+                  icon: Icons.check,
+                  index: 9,
+                  widget: const ManageTasks(),
+                ),
+              ],
             ),
-            HoverableListItem(
+            buildTile(
+              context,
               title: 'Manage Reports',
-              onTap: () => onItemTapped(4, const ManageReports()),
-              icon: const Icon(Icons.file_copy_outlined),
-              isSelected: selectedIndex == 4,
+              icon: Icons.file_copy_outlined,
+              index: 10,
+              widget: const ManageReports(),
             ),
-            HoverableListItem(
+            buildTile(
+              context,
               title: 'Settings',
-              onTap: () => onItemTapped(5, const Settings()),
-              icon: const Icon(Icons.settings),
-              isSelected: selectedIndex == 5,
+              icon: Icons.settings,
+              index: 11,
+              widget: Settings(),
             ),
           ],
         ),
       ),
     );
   }
-}
 
-class HoverableListItem extends StatefulWidget {
-  final String title;
-  final Icon? icon;
-  final VoidCallback onTap;
-  final bool isSelected;
+  Widget buildTile(
+      BuildContext context, {
+        required String title,
+        required IconData icon,
+        required int index,
+        required Widget widget,
+      }) {
+    return ListTile(
+      title: Text(
+        title,
+        style: TextStyle(
+          color: selectedIndex == index ? customAqua : Colors.grey,
+        ),
+      ),
+      leading: Icon(icon, color: selectedIndex == index ? customAqua : Colors.grey),
+      selected: selectedIndex == index,
+      onTap: () => onItemTapped(index, widget),
+    );
+  }
 
-  const HoverableListItem({super.key, required this.title, required this.onTap, this.icon, required this.isSelected});
-
-  @override
-  _HoverableListItemState createState() => _HoverableListItemState();
-}
-
-class _HoverableListItemState extends State<HoverableListItem> {
-  bool _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => _mouseEnter(true),
-      onExit: (_) => _mouseEnter(false),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-          color: _isHovered || widget.isSelected ? customDarkGrey : Colors.transparent,
-          child: ListTile(
-            leading: widget.icon,
-            title: Text(
-              widget.title,
-              style: TextStyle(
-                color: _isHovered || widget.isSelected ? Colors.white : Colors.grey,
-                fontWeight: widget.isSelected ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-            onTap: widget.onTap,
+  Widget buildChildTile(
+      BuildContext context, {
+        required String title,
+        required IconData icon,
+        required int index,
+        required Widget widget,
+      }) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 40.0, right: 8.0),
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        title: Text(
+          title,
+          style: TextStyle(
+            color: selectedIndex == index ? Colors.white : Colors.grey,
+            fontSize: selectedIndex == index ? 16 : 14,
           ),
         ),
+        leading: Icon(icon, color: selectedIndex == index ? Colors.white : Colors.grey, size: 20),
+        selected: selectedIndex == index,
+        onTap: () => onItemTapped(index, widget),
       ),
     );
   }
 
-  void _mouseEnter(bool isHovered) {
-    setState(() {
-      _isHovered = isHovered;
-    });
+  Widget buildExpansionTile(
+      BuildContext context, {
+        required String title,
+        required IconData icon,
+        required List<int> indices,
+        required List<Widget> children,
+      }) {
+    bool isSelected = indices.contains(selectedIndex);
+    return ExpansionTile(
+      title: Text(
+        title,
+        style: TextStyle(
+          color: isSelected ? customAqua : Colors.grey,
+        ),
+      ),
+      leading: Icon(icon, color: isSelected ? customAqua : Colors.grey),
+      iconColor: isSelected ? customAqua : Colors.grey,
+      children: children,
+    );
   }
 }

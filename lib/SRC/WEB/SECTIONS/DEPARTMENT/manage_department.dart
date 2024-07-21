@@ -23,16 +23,16 @@ class _ManageDepartmentState extends State<ManageDepartment> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topLeft,
-      child: const SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CreateDepartmentWidget(),
-            divider(),
+            const CreateDepartmentWidget(),
+            const divider(),
             ViewEditSearchDepartmentsWidget(),
-            divider(),
-            AddMembersInDepartmentWidget(),
+            const divider(),
+            const AddMembersInDepartmentWidget(),
           ],
         ),
       ),

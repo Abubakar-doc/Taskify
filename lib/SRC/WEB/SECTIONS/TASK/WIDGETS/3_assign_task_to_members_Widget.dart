@@ -2,23 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:taskify/THEME/theme.dart';
 import 'package:drop_down_search_field/drop_down_search_field.dart';
 
-class AddMembersInDepartmentWidget extends StatefulWidget {
-  const AddMembersInDepartmentWidget({super.key});
+class AssignTasksToMembersWidget extends StatefulWidget {
+  const AssignTasksToMembersWidget({super.key});
 
   @override
-  _AddMembersInDepartmentWidgetState createState() =>
-      _AddMembersInDepartmentWidgetState();
+  _AssignTasksToMembersWidgetState createState() => _AssignTasksToMembersWidgetState();
 }
 
-class _AddMembersInDepartmentWidgetState
-    extends State<AddMembersInDepartmentWidget> {
-  final TextEditingController _departmentController = TextEditingController();
+class _AssignTasksToMembersWidgetState extends State<AssignTasksToMembersWidget> {
+  final TextEditingController _taskController = TextEditingController();
   final TextEditingController _memberController = TextEditingController();
   final TextEditingController _memberEmailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // Test data
-  List<String> departmentList = ['Dept A', 'Dept B', 'Dept C'];
+  List<Map<String, String>> tasks = [
+    {'name': 'Task 1', 'description': 'Description for Task 1'},
+    {'name': 'Task 2', 'description': 'Description for Task 2'},
+    {'name': 'Task 3', 'description': 'Description for Task 3'},
+    {'name': 'Task 4', 'description': 'Description for Task 4'},
+    {'name': 'Task 5', 'description': 'Description for Task 5'},
+    {'name': 'Task 6', 'description': 'Description for Task 6'},
+    {'name': 'Task 7', 'description': 'Description for Task 7'},
+    {'name': 'Task 8', 'description': 'Description for Task 8'},
+    {'name': 'Task 9', 'description': 'Description for Task 9'},
+    {'name': 'Task 10', 'description': 'Description for Task 10'}
+  ];
   List<Map<String, String>> memberList = [
     {'name': 'John Doe', 'email': 'john.doe@example.com'},
     {'name': 'Jane Smith', 'email': 'jane.smith@example.com'},
@@ -26,12 +35,12 @@ class _AddMembersInDepartmentWidgetState
     {'name': 'bhalu Johnson', 'email': 'mike.johnson@example.com'},
   ];
 
-  String? selectedDepartment;
+  Map<String, String> selectedTask = {};
   Map<String, String> selectedMember = {};
 
   @override
   void dispose() {
-    _departmentController.dispose();
+    _taskController.dispose();
     _memberController.dispose();
     _memberEmailController.dispose();
     super.dispose();
@@ -39,24 +48,23 @@ class _AddMembersInDepartmentWidgetState
 
   void handleCancel() {
     setState(() {
-      _departmentController.clear();
+      _taskController.clear();
       _memberController.clear();
       _memberEmailController.clear();
-      selectedDepartment = null;
+      selectedTask = {};
       selectedMember = {};
     });
   }
 
-  List<String> getDepartmentSuggestions(String query) {
-    return departmentList
-        .where((dept) => dept.toLowerCase().contains(query.toLowerCase()))
+  List<Map<String, String>> getTaskSuggestions(String query) {
+    return tasks
+        .where((task) => task['name']!.toLowerCase().contains(query.toLowerCase()))
         .toList();
   }
 
   List<Map<String, String>> getMemberSuggestions(String query) {
     return memberList
-        .where((member) =>
-        member['name']!.toLowerCase().contains(query.toLowerCase()))
+        .where((member) => member['name']!.toLowerCase().contains(query.toLowerCase()))
         .toList();
   }
 
@@ -64,14 +72,13 @@ class _AddMembersInDepartmentWidgetState
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topLeft,
-      padding: const EdgeInsets.all(16.0),
       child: Form(
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Add Members in Departments',
+              'Assign Task to Members',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24,
@@ -79,7 +86,7 @@ class _AddMembersInDepartmentWidgetState
             ),
             const SizedBox(height: 16),
             const Text(
-              'Department',
+              'Task',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -91,21 +98,25 @@ class _AddMembersInDepartmentWidgetState
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: customLightGrey,
-                  hintText: 'Search Department',
+                  hintText: 'Search Task',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                     borderSide: BorderSide.none,
                   ),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
                 ),
-                controller: _departmentController,
+                controller: _taskController,
               ),
               suggestionsCallback: (pattern) {
-                return getDepartmentSuggestions(pattern);
+                return getTaskSuggestions(pattern)
+                    .map((task) => task['name']!)
+                    .toList();
               },
               itemBuilder: (context, String suggestion) {
+                final task = tasks.firstWhere((task) => task['name'] == suggestion);
                 return ListTile(
                   title: Text(suggestion),
+                  subtitle: Text(task['description']!),
                 );
               },
               itemSeparatorBuilder: (context, index) {
@@ -115,18 +126,35 @@ class _AddMembersInDepartmentWidgetState
                 return suggestionsBox;
               },
               onSuggestionSelected: (String suggestion) {
+                final task = tasks.firstWhere((task) => task['name'] == suggestion);
                 setState(() {
-                  selectedDepartment = suggestion;
-                  _departmentController.text = suggestion;
+                  selectedTask = task;
+                  _taskController.text = suggestion;
                 });
               },
               displayAllSuggestionWhenTap: true,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please select a department';
+                  return 'Please select a Task';
                 }
                 return null;
               },
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: TextEditingController(text: selectedTask['description']),
+              enabled: false, // Disable typing
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: customLightGrey,
+                hintText: 'Task Description',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+              ),
+              style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 16),
             const Text(
@@ -157,8 +185,7 @@ class _AddMembersInDepartmentWidgetState
                     .toList();
               },
               itemBuilder: (context, String suggestion) {
-                final member = memberList
-                    .firstWhere((member) => member['name'] == suggestion);
+                final member = memberList.firstWhere((member) => member['name'] == suggestion);
                 return ListTile(
                   title: Text(suggestion),
                   subtitle: Text(member['email']!),
@@ -171,11 +198,10 @@ class _AddMembersInDepartmentWidgetState
                 return suggestionsBox;
               },
               onSuggestionSelected: (String suggestion) {
-                final member = memberList
-                    .firstWhere((member) => member['name'] == suggestion);
+                final member = memberList.firstWhere((member) => member['name'] == suggestion);
                 setState(() {
                   selectedMember = member;
-                  _memberController.text = member['name']!;
+                  _memberController.text = suggestion;
                   _memberEmailController.text = member['email']!;
                 });
               },
@@ -217,11 +243,11 @@ class _AddMembersInDepartmentWidgetState
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               // Implement Add Member logic here
-                              final department = _departmentController.text;
+                              final task = _taskController.text;
                               final member = _memberController.text;
                               final memberEmail = _memberEmailController.text;
-                              // Perform the add member logic with department, member, and memberEmail
-                              print('Member Added: $member to Department: $department with Email: $memberEmail');
+                              // Perform the add member logic with task, member, and memberEmail
+                              print('Member Added: $member to Task: $task with Email: $memberEmail');
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -233,7 +259,7 @@ class _AddMembersInDepartmentWidgetState
                           child: const Padding(
                             padding: EdgeInsets.all(12.0),
                             child: Text(
-                              'Add Member',
+                              'Assign Task',
                               style: TextStyle(color: Colors.black),
                             ),
                           ),

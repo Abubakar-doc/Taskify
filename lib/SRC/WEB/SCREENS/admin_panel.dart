@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:simple_icons/simple_icons.dart';
-import 'package:taskify/SRC/WEB/SECTIONS/overview.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/OVERVIEW/overview.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/still_web_drawer.dart';
 import 'package:taskify/THEME/theme.dart';
 
@@ -68,16 +67,7 @@ class _AdminPanelState extends State<AdminPanel> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                transitionBuilder: (Widget child, Animation<double> animation) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  );
-                },
-                child: _selectedWidget,
-              ),
+              child: _selectedWidget,
             ),
           ),
         ],
