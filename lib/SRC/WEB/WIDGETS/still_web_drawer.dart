@@ -11,10 +11,26 @@ class DrawerWidget extends StatelessWidget {
   final int selectedIndex;
   final Function(int, Widget) onItemTapped;
 
+  // Add keys as parameters
+  final GlobalKey createDepartmentKey;
+  final GlobalKey viewEditSearchDepartmentsKey;
+  final GlobalKey addMembersInDepartmentKey;
+  final GlobalKey createTasksKey;
+  final GlobalKey viewEditSearchTasksKey;
+  final GlobalKey assignTasksToMembersKey;
+  final GlobalKey evaluateTasksKey;
+
   const DrawerWidget({
     super.key,
     required this.selectedIndex,
     required this.onItemTapped,
+    required this.createDepartmentKey,
+    required this.viewEditSearchDepartmentsKey,
+    required this.addMembersInDepartmentKey,
+    required this.createTasksKey,
+    required this.viewEditSearchTasksKey,
+    required this.assignTasksToMembersKey,
+    required this.evaluateTasksKey,
   });
 
   @override
@@ -43,7 +59,16 @@ class DrawerWidget extends StatelessWidget {
               title: 'Overview',
               icon: Icons.dashboard,
               index: 0,
-              widget: Overview(onItemTapped: onItemTapped),
+              widget: Overview(
+                onItemTapped: onItemTapped,
+                createDepartmentKey: createDepartmentKey,
+                viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
+                addMembersInDepartmentKey: addMembersInDepartmentKey,
+                createTasksKey: createTasksKey,
+                viewEditSearchTasksKey: viewEditSearchTasksKey,
+                assignTasksToMembersKey: assignTasksToMembersKey,
+                evaluateTasksKey: evaluateTasksKey,
+              ),
             ),
             buildExpansionTile(
               context,
@@ -56,21 +81,33 @@ class DrawerWidget extends StatelessWidget {
                   title: 'Create Department',
                   icon: Icons.add,
                   index: 1,
-                  widget: const ManageDepartment(),
+                  widget: ManageDepartment(
+                    createDepartmentKey: createDepartmentKey,
+                    viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
+                    addMembersInDepartmentKey: addMembersInDepartmentKey,
+                  ),
                 ),
                 buildChildTile(
                   context,
                   title: 'View Departments',
                   icon: Icons.remove_red_eye,
                   index: 2,
-                  widget: const ManageDepartment(),
+                  widget: ManageDepartment(
+                    createDepartmentKey: createDepartmentKey,
+                    viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
+                    addMembersInDepartmentKey: addMembersInDepartmentKey,
+                  ),
                 ),
                 buildChildTile(
                   context,
                   title: 'Add Members in Department',
                   icon: Icons.add_box_outlined,
                   index: 3,
-                  widget: const ManageDepartment(),
+                  widget: ManageDepartment(
+                    createDepartmentKey: createDepartmentKey,
+                    viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
+                    addMembersInDepartmentKey: addMembersInDepartmentKey,
+                  ),
                 ),
               ],
             ),
@@ -78,7 +115,7 @@ class DrawerWidget extends StatelessWidget {
               context,
               title: 'Manage Members',
               icon: Icons.person,
-              indices: [4,5],
+              indices: [4, 5],
               children: [
                 buildChildTile(
                   context,
@@ -107,28 +144,48 @@ class DrawerWidget extends StatelessWidget {
                   title: 'Create Tasks',
                   icon: Icons.add,
                   index: 6,
-                  widget: const ManageTasks(),
+                  widget: ManageTasks(
+                    createTasksKey: createTasksKey,
+                    viewEditSearchTasksKey: viewEditSearchTasksKey,
+                    assignTasksToMembersKey: assignTasksToMembersKey,
+                    evaluateTasksKey: evaluateTasksKey,
+                  ),
                 ),
                 buildChildTile(
                   context,
                   title: 'View Tasks',
                   icon: Icons.remove_red_eye,
                   index: 7,
-                  widget: const ManageTasks(),
+                  widget: ManageTasks(
+                    createTasksKey: createTasksKey,
+                    viewEditSearchTasksKey: viewEditSearchTasksKey,
+                    assignTasksToMembersKey: assignTasksToMembersKey,
+                    evaluateTasksKey: evaluateTasksKey,
+                  ),
                 ),
                 buildChildTile(
                   context,
                   title: 'Assign Tasks to Members',
                   icon: Icons.add_box_outlined,
                   index: 8,
-                  widget: const ManageTasks(),
+                  widget: ManageTasks(
+                    createTasksKey: createTasksKey,
+                    viewEditSearchTasksKey: viewEditSearchTasksKey,
+                    assignTasksToMembersKey: assignTasksToMembersKey,
+                    evaluateTasksKey: evaluateTasksKey,
+                  ),
                 ),
                 buildChildTile(
                   context,
                   title: 'Evaluate Tasks',
                   icon: Icons.check,
                   index: 9,
-                  widget: const ManageTasks(),
+                  widget: ManageTasks(
+                    createTasksKey: createTasksKey,
+                    viewEditSearchTasksKey: viewEditSearchTasksKey,
+                    assignTasksToMembersKey: assignTasksToMembersKey,
+                    evaluateTasksKey: evaluateTasksKey,
+                  ),
                 ),
               ],
             ),
@@ -144,7 +201,7 @@ class DrawerWidget extends StatelessWidget {
               title: 'Settings',
               icon: Icons.settings,
               index: 11,
-              widget: Settings(),
+              widget: const Settings(),
             ),
           ],
         ),
@@ -166,7 +223,8 @@ class DrawerWidget extends StatelessWidget {
           color: selectedIndex == index ? customAqua : Colors.grey,
         ),
       ),
-      leading: Icon(icon, color: selectedIndex == index ? customAqua : Colors.grey),
+      leading:
+      Icon(icon, color: selectedIndex == index ? customAqua : Colors.grey),
       selected: selectedIndex == index,
       onTap: () => onItemTapped(index, widget),
     );
@@ -190,7 +248,9 @@ class DrawerWidget extends StatelessWidget {
             fontSize: selectedIndex == index ? 16 : 14,
           ),
         ),
-        leading: Icon(icon, color: selectedIndex == index ? Colors.white : Colors.grey, size: 20),
+        leading: Icon(icon,
+            color: selectedIndex == index ? Colors.white : Colors.grey,
+            size: 20),
         selected: selectedIndex == index,
         onTap: () => onItemTapped(index, widget),
       ),

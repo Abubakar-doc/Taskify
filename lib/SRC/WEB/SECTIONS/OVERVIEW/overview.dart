@@ -8,14 +8,48 @@ import 'WIDGETS/1_dashboard_card_widget.dart';
 
 class Overview extends StatefulWidget {
   final Function(int, Widget) onItemTapped;
+  final GlobalKey createDepartmentKey;
+  final GlobalKey viewEditSearchDepartmentsKey;
+  final GlobalKey addMembersInDepartmentKey;
+  final GlobalKey createTasksKey;
+  final GlobalKey viewEditSearchTasksKey;
+  final GlobalKey assignTasksToMembersKey;
+  final GlobalKey evaluateTasksKey;
 
-  const Overview({super.key, required this.onItemTapped});
+  const Overview({
+    super.key,
+    required this.onItemTapped,
+    required this.createDepartmentKey,
+    required this.viewEditSearchDepartmentsKey,
+    required this.addMembersInDepartmentKey,
+    required this.createTasksKey,
+    required this.viewEditSearchTasksKey,
+    required this.assignTasksToMembersKey,
+    required this.evaluateTasksKey,
+  });
 
   @override
   State<Overview> createState() => _OverviewState();
 }
 
 class _OverviewState extends State<Overview> {
+  void _handleDepartmentNavigation() {
+    widget.onItemTapped(1, ManageDepartment(
+      createDepartmentKey: widget.createDepartmentKey,
+      viewEditSearchDepartmentsKey: widget.viewEditSearchDepartmentsKey,
+      addMembersInDepartmentKey: widget.addMembersInDepartmentKey,
+    ));
+  }
+
+  void _handleTasksNavigation() {
+    widget.onItemTapped(6, ManageTasks(
+      createTasksKey: widget.createTasksKey,
+      viewEditSearchTasksKey: widget.viewEditSearchTasksKey,
+      assignTasksToMembersKey: widget.assignTasksToMembersKey,
+      evaluateTasksKey: widget.evaluateTasksKey,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -27,9 +61,7 @@ class _OverviewState extends State<Overview> {
                 child: DashboardCard(
                   title: 'View Departments',
                   buttonText: 'Go to Departments',
-                  onPressed: () {
-                    widget.onItemTapped(1, const ManageDepartment());
-                  },
+                  onPressed: _handleDepartmentNavigation,
                 ),
               ),
               const SizedBox(width: 20),
@@ -53,9 +85,7 @@ class _OverviewState extends State<Overview> {
                 child: DashboardCard(
                   title: 'View Tasks',
                   buttonText: 'Go to Tasks',
-                  onPressed: () {
-                    widget.onItemTapped(3, const ManageTasks());
-                  },
+                  onPressed: _handleTasksNavigation,
                 ),
               ),
               const SizedBox(width: 20),
@@ -77,7 +107,7 @@ class _OverviewState extends State<Overview> {
             title: 'View Other Actions',
             buttonText: 'Go to Settings',
             onPressed: () {
-              widget.onItemTapped(5, Settings());
+              widget.onItemTapped(5, const Settings());
             },
           ),
         ),
@@ -85,6 +115,3 @@ class _OverviewState extends State<Overview> {
     );
   }
 }
-
-
-

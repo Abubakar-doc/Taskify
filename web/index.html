@@ -15,7 +15,30 @@
     the `--base-href` argument provided to `flutter build`.
   -->
   <base href="$FLUTTER_BASE_HREF">
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDSCVtDG8Oh8PNKwgjwyLmsgFaCNsvOyiY",
+  authDomain: "taskify-a182c.firebaseapp.com",
+  databaseURL: "https://taskify-a182c-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "taskify-a182c",
+  storageBucket: "taskify-a182c.appspot.com",
+  messagingSenderId: "129387226201",
+  appId: "1:129387226201:web:49b9e5b092d6b9253bfd48",
+  measurementId: "G-NJ0G1J4KDY"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+  </script>
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">

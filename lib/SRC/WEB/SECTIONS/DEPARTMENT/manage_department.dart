@@ -5,20 +5,22 @@ import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/widgets/3_add_members_in_dep
 import 'package:taskify/SRC/WEB/WIDGETS/small_widgets.dart';
 
 class ManageDepartment extends StatefulWidget {
-  const ManageDepartment({super.key});
+  final GlobalKey createDepartmentKey;
+  final GlobalKey viewEditSearchDepartmentsKey;
+  final GlobalKey addMembersInDepartmentKey;
+
+  const ManageDepartment({
+    super.key,
+    required this.createDepartmentKey,
+    required this.viewEditSearchDepartmentsKey,
+    required this.addMembersInDepartmentKey,
+  });
 
   @override
   State<ManageDepartment> createState() => _ManageDepartmentState();
 }
 
 class _ManageDepartmentState extends State<ManageDepartment> {
-  TextEditingController searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,11 +30,11 @@ class _ManageDepartmentState extends State<ManageDepartment> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const CreateDepartmentWidget(),
+            CreateDepartmentWidget(key: widget.createDepartmentKey),
             const divider(),
-            ViewEditSearchDepartmentsWidget(),
+            ViewEditSearchDepartmentsWidget(key: widget.viewEditSearchDepartmentsKey),
             const divider(),
-            const AddMembersInDepartmentWidget(),
+            AddMembersInDepartmentWidget(key: widget.addMembersInDepartmentKey),
           ],
         ),
       ),

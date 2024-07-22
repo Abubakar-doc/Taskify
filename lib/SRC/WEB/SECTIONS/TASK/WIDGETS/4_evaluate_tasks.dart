@@ -222,7 +222,7 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
     // Create a TextEditingController for the message TextField
     final TextEditingController messageController = TextEditingController();
     // Create a global key for the form
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
@@ -231,7 +231,7 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
           title: Text('$action Task'),
           backgroundColor: customLightGrey,
           content: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -267,14 +267,13 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
             ),
             ElevatedButton(
               onPressed: () {
-                if (_formKey.currentState?.validate() ?? false) {
+                if (formKey.currentState?.validate() ?? false) {
                   setState(() {
                     filteredTasks.removeAt(index);
-                    String message = messageController.text.trim(); // Get the message input
                     if (action == 'Pass') {
-                      WebUtils().showSuccessToast("Task marked as completed successfully! Message: $message", context);
+                      WebUtils().showSuccessToast("Task marked as completed successfully!", context);
                     } else {
-                      WebUtils().showErrorToast("Task rejected! Message: $message", context);
+                      WebUtils().showErrorToast("Task rejected!", context);
                     }
                   });
                   Navigator.of(context).pop();
@@ -306,7 +305,7 @@ class TaskTableListItem extends StatelessWidget {
   final VoidCallback onReject;
   final VoidCallback onPass;
 
-  const TaskTableListItem({
+  const TaskTableListItem({super.key, 
     required this.taskName,
     required this.deadline,
     required this.memberName,

@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 
 
 class Settings extends StatefulWidget {
+  const Settings({super.key});
+
   @override
   _SettingsState createState() => _SettingsState();
 }
@@ -30,7 +32,7 @@ class _SettingsState extends State<Settings> {
     final context = key.currentContext;
     if (context != null) {
       Scrollable.ensureVisible(context,
-          duration: Duration(seconds: 1), curve: Curves.easeInOut);
+          duration: const Duration(seconds: 1), curve: Curves.easeInOut);
     }
     Navigator.of(context!).pop(); // Close the drawer
   }
@@ -40,7 +42,7 @@ class _SettingsState extends State<Settings> {
       key: key,
       height: MediaQuery.of(context).size.height,
       color: color,
-      child: Center(child: Text(title, style: TextStyle(fontSize: 24, color: Colors.white))),
+      child: Center(child: Text(title, style: const TextStyle(fontSize: 24, color: Colors.white))),
     );
   }
 
@@ -68,13 +70,13 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Multiple Bodies Example'),
+        title: const Text('Multiple Bodies Example'),
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),
@@ -87,7 +89,7 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             ListTile(
-              title: Text('Body 1 - Section 1'),
+              title: const Text('Body 1 - Section 1'),
               onTap: () {
                 setState(() {
                   _currentBodyIndex = 0;
@@ -96,7 +98,7 @@ class _SettingsState extends State<Settings> {
               },
             ),
             ListTile(
-              title: Text('Body 1 - Section 2'),
+              title: const Text('Body 1 - Section 2'),
               onTap: () {
                 setState(() {
                   _currentBodyIndex = 0;
@@ -105,7 +107,7 @@ class _SettingsState extends State<Settings> {
               },
             ),
             ListTile(
-              title: Text('Body 1 - Section 3'),
+              title: const Text('Body 1 - Section 3'),
               onTap: () {
                 setState(() {
                   _currentBodyIndex = 0;
@@ -113,9 +115,9 @@ class _SettingsState extends State<Settings> {
                 _scrollToSection(_body1Keys[2]);
               },
             ),
-            Divider(),
+            const Divider(),
             ListTile(
-              title: Text('Body 2 - Section 1'),
+              title: const Text('Body 2 - Section 1'),
               onTap: () {
                 setState(() {
                   _currentBodyIndex = 1;
@@ -124,7 +126,7 @@ class _SettingsState extends State<Settings> {
               },
             ),
             ListTile(
-              title: Text('Body 2 - Section 2'),
+              title: const Text('Body 2 - Section 2'),
               onTap: () {
                 setState(() {
                   _currentBodyIndex = 1;
@@ -133,7 +135,7 @@ class _SettingsState extends State<Settings> {
               },
             ),
             ListTile(
-              title: Text('Body 2 - Section 3'),
+              title: const Text('Body 2 - Section 3'),
               onTap: () {
                 setState(() {
                   _currentBodyIndex = 1;
@@ -141,9 +143,9 @@ class _SettingsState extends State<Settings> {
                 _scrollToSection(_body2Keys[2]);
               },
             ),
-            Divider(),
+            const Divider(),
             ListTile(
-              title: Text('Body 3 - Section 1'),
+              title: const Text('Body 3 - Section 1'),
               onTap: () {
                 setState(() {
                   _currentBodyIndex = 2;
@@ -152,7 +154,7 @@ class _SettingsState extends State<Settings> {
               },
             ),
             ListTile(
-              title: Text('Body 3 - Section 2'),
+              title: const Text('Body 3 - Section 2'),
               onTap: () {
                 setState(() {
                   _currentBodyIndex = 2;
@@ -161,7 +163,7 @@ class _SettingsState extends State<Settings> {
               },
             ),
             ListTile(
-              title: Text('Body 3 - Section 3'),
+              title: const Text('Body 3 - Section 3'),
               onTap: () {
                 setState(() {
                   _currentBodyIndex = 2;
