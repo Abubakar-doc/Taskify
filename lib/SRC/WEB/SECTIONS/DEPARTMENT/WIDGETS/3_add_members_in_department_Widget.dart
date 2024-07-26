@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/WEB/SERVICES/department.dart';
 import 'package:taskify/THEME/theme.dart';
 import 'package:drop_down_search_field/drop_down_search_field.dart';
+import 'package:taskify/SRC/WEB/MODEL/department.dart';
 
 class AddMembersInDepartmentWidget extends StatefulWidget {
   const AddMembersInDepartmentWidget({super.key});
@@ -17,17 +19,30 @@ class _AddMembersInDepartmentWidgetState
   final TextEditingController _memberEmailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // Test data
-  List<String> departmentList = ['Dept A', 'Dept B', 'Dept C'];
+  final DepartmentService _departmentService = DepartmentService();
+
+  List<Department> departmentList = [];
   List<Map<String, String>> memberList = [
     {'name': 'John Doe', 'email': 'john.doe@example.com'},
     {'name': 'Jane Smith', 'email': 'jane.smith@example.com'},
-    {'name': 'ada Johnson', 'email': 'mike.johnson@example.com'},
-    {'name': 'bhalu Johnson', 'email': 'mike.johnson@example.com'},
+    {'name': 'Ada Johnson', 'email': 'ada.johnson@example.com'},
+    {'name': 'Bhalu Johnson', 'email': 'bhalu.johnson@example.com'},
   ];
 
   String? selectedDepartment;
   Map<String, String> selectedMember = {};
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _departmentService.getDepartments().listen((departments) {
+      setState(() {
+        departmentList = departments;
+        isLoading = false;
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -48,8 +63,14 @@ class _AddMembersInDepartmentWidgetState
   }
 
   List<String> getDepartmentSuggestions(String query) {
+    if (isLoading) {
+      return ['Loading...'];
+    } else if (departmentList.isEmpty) {
+      return ['No departments found'];
+    }
     return departmentList
-        .where((dept) => dept.toLowerCase().contains(query.toLowerCase()))
+        .where((dept) => dept.name.toLowerCase().contains(query.toLowerCase()))
+        .map((dept) => dept.name)
         .toList();
   }
 
@@ -115,14 +136,19 @@ class _AddMembersInDepartmentWidgetState
                 return suggestionsBox;
               },
               onSuggestionSelected: (String suggestion) {
-                setState(() {
-                  selectedDepartment = suggestion;
-                  _departmentController.text = suggestion;
-                });
+                if (suggestion != 'Loading...' && suggestion != 'No departments found') {
+                  setState(() {
+                    selectedDepartment = suggestion;
+                    _departmentController.text = suggestion;
+                  });
+                }
               },
               displayAllSuggestionWhenTap: true,
               validator: (value) {
-                if (value == null || value.isEmpty) {
+                if (value == null ||
+                    value.isEmpty ||
+                    value == 'Loading...' ||
+                    value == 'No departments found') {
                   return 'Please select a department';
                 }
                 return null;

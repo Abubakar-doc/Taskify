@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/WIDGETS/3_add_members_in_department_Widget.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/manage_department.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/MEMBER/manage_member.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/REPORT/manage_reports.dart';
@@ -35,6 +36,7 @@ class DrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     double screenWidth = MediaQuery.of(context).size.width;
     double drawerWidth = screenWidth / 3;
     double maxWidth = 250.0;
@@ -103,11 +105,12 @@ class DrawerWidget extends StatelessWidget {
                   title: 'Add Members in Department',
                   icon: Icons.add_box_outlined,
                   index: 3,
-                  widget: ManageDepartment(
-                    createDepartmentKey: createDepartmentKey,
-                    viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
-                    addMembersInDepartmentKey: addMembersInDepartmentKey,
-                  ),
+                  widget: const AddMembersInDepartmentWidget(),
+                  // widget: ManageDepartment(
+                  //   createDepartmentKey: createDepartmentKey,
+                  //   viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
+                  //   addMembersInDepartmentKey: addMembersInDepartmentKey,
+                  // ),
                 ),
               ],
             ),

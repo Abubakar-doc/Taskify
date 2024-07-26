@@ -7,6 +7,8 @@ import 'package:taskify/THEME/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -35,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Admin Panel Login',
+                'Taskify Admin Panel Login',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20.0,
@@ -165,21 +167,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         },
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(customAqua),
-                          shape: MaterialStateProperty.all(
+                          backgroundColor: WidgetStateProperty.all(customAqua),
+                          shape: WidgetStateProperty.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                           ),
                         ),
                         child: _isLoading
-                            ? const Padding(
-                          padding: EdgeInsets.all(5.0),
+                            ? Padding(
+                          padding: const EdgeInsets.all(5.0),
                           child: SizedBox(
                             width: 23.0,
                             height: 23.0,
                             child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.grey.shade800),
                             ),
                           ),
                         )

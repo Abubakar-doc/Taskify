@@ -3,12 +3,14 @@ import 'package:taskify/THEME/theme.dart';
 
 class HoverableElevatedButton extends StatefulWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
+  final bool isLoading;
 
   const HoverableElevatedButton({
     super.key,
     required this.text,
-    required this.onPressed,
+    this.onPressed,
+    this.isLoading = false,
   });
 
   @override
@@ -27,24 +29,33 @@ class _HoverableElevatedButtonState extends State<HoverableElevatedButton> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor:
-          _isHovered ? customAqua.withOpacity(0.8) : customAqua,
+              _isHovered ? customAqua.withOpacity(0.8) : customAqua,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(6),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20),
         ),
-        onPressed: widget.onPressed,
-        child: Container(
+        onPressed: widget.isLoading ? null : widget.onPressed,
+        child: SizedBox(
           width: double.infinity,
           height: 40,
-          alignment: Alignment.center,
-          child: Text(
-            widget.text,
-            style: const TextStyle(
-              color: Colors.black,
+          child: Center(
+            child: widget.isLoading
+                ? const Padding(
+              padding: EdgeInsets.all(5.0),
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            )
+                : Text(
+              widget.text,
+              style: const TextStyle(
+                color: Colors.black,
+              ),
             ),
           ),
-        ),
+        )
+
       ),
     );
   }

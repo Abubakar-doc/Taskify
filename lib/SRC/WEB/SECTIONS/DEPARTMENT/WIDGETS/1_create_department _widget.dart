@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/WEB/MODEL/department.dart';
+import 'package:taskify/SRC/WEB/SERVICES/department.dart';
+import 'package:taskify/SRC/WEB/UTILS/web_utils.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/hoverable_stretched_aqua_button.dart';
 import 'package:taskify/THEME/theme.dart';
 
@@ -10,8 +13,11 @@ class CreateDepartmentWidget extends StatefulWidget {
 }
 
 class _CreateDepartmentWidgetState extends State<CreateDepartmentWidget> {
-  final TextEditingController _departmentNameController = TextEditingController();
+  final TextEditingController _departmentNameController =
+      TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final DepartmentService _departmentService = DepartmentService();
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,14 +67,41 @@ class _CreateDepartmentWidgetState extends State<CreateDepartmentWidget> {
             const SizedBox(height: 16),
             HoverableElevatedButton(
               text: 'Create Department',
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  // Implement Create Department logic here
-                  final departmentName = _departmentNameController.text;
-                  // Perform the create department logic with departmentName
-                  print('Department Created: $departmentName');
-                }
-              },
+              onPressed: _isLoading
+                  ? null
+                  : () async {
+                      if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        final departmentName = _departmentNameController.text;
+                        final now = DateTime.now().millisecondsSinceEpoch;
+
+                        final department = Department(
+                          name: departmentName,
+                          createdAt: now,
+                          updatedAt: now,
+                        );
+
+                        try {
+                          await _departmentService.createDepartment(department);
+                          WebUtils().SuccessSnackBar(
+                              context,
+                              'The department "$departmentName" has been successfully created!'
+                          );
+                          _formKey.currentState!.reset();
+                          _departmentNameController.clear();
+                        } catch (e) {
+                          WebUtils().ErrorSnackBar(
+                              context, 'Failed to create department, $e');
+                        } finally {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                        }
+                      }
+                    },
+              isLoading: _isLoading,
             ),
           ],
         ),

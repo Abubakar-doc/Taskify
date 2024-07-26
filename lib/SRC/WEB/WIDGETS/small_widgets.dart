@@ -19,3 +19,27 @@ class divider extends StatelessWidget {
     );
   }
 }
+
+
+class LoadingPlaceholder extends StatelessWidget {
+  final double height;
+  final Color color;
+
+  const LoadingPlaceholder({
+    Key? key,
+    this.height = 300,
+    this.color = Colors.grey,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: height, // Adjustable height
+      child: Center(
+        child: CircularProgressIndicator(
+          color: color,
+        ),
+      ),
+    );
+  }
+}

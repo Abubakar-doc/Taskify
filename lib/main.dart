@@ -28,7 +28,7 @@ Future<void> main() async {
 }
 
 class TaskifyApp extends StatelessWidget {
-  const TaskifyApp({Key? key}) : super(key: key);
+  const TaskifyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
