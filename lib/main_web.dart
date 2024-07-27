@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/SRC/WEB/MODEL/authenticatiion.dart';
-import 'package:taskify/SRC/WEB/SCREENS/admin_panel.dart';
-import 'package:taskify/SRC/WEB/SCREENS/welcome.dart';
+import 'package:taskify/SRC/WEB/SCREENS/HOME/admin_panel.dart';
+import 'package:taskify/SRC/WEB/SCREENS/WELCOME/welcome.dart';
 import 'package:taskify/SRC/WEB/SERVICES/authentication.dart';
 
 class WebHomePage extends StatefulWidget {
@@ -39,16 +39,3 @@ class _WebHomePageState extends State<WebHomePage> {
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-//
-// import 'SRC/WEB/SCREENS/admin_panel.dart';
-//
-// class WebHomePage extends StatelessWidget {
-//   const WebHomePage({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return const AdminPanel();
-//   }
-// }

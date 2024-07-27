@@ -352,11 +352,23 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
                     setState(() {
                       isLoading = true; // Start loading
                     });
-                    await _taskService.deleteTask(taskId);
-                    setState(() {
-                      isLoading = false; // End loading
-                    });
-                    Navigator.of(context).pop();
+                    try {
+                      await _taskService.deleteTask(taskId);
+                      Navigator.of(context).pop();
+                      WebUtils().InfoSnackBar(
+                        context,
+                        "Task has been successfully deleted!",
+                      );
+                    } catch (e) {
+                      WebUtils().ErrorSnackBar(
+                        context,
+                        "Failed to delete task. Please try again.",
+                      );
+                    } finally {
+                      setState(() {
+                        isLoading = false; // End loading
+                      });
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red.shade400,
@@ -382,4 +394,5 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
       },
     );
   }
+
 }

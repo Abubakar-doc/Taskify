@@ -4,6 +4,7 @@ import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/manage_department.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/MEMBER/manage_member.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/REPORT/manage_reports.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/SETTINGS/manage_settings.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/TASK/WIDGETS/3_assign_task_to_members_Widget.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/TASK/manage_tasks.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/OVERVIEW/overview.dart';
 import 'package:taskify/THEME/theme.dart';
@@ -20,6 +21,7 @@ class DrawerWidget extends StatelessWidget {
   final GlobalKey viewEditSearchTasksKey;
   final GlobalKey assignTasksToMembersKey;
   final GlobalKey evaluateTasksKey;
+  final GlobalKey approveNewUserRegistrationKey;
 
   const DrawerWidget({
     super.key,
@@ -32,11 +34,11 @@ class DrawerWidget extends StatelessWidget {
     required this.viewEditSearchTasksKey,
     required this.assignTasksToMembersKey,
     required this.evaluateTasksKey,
+    required this.approveNewUserRegistrationKey, // New key
   });
 
   @override
   Widget build(BuildContext context) {
-
     double screenWidth = MediaQuery.of(context).size.width;
     double drawerWidth = screenWidth / 3;
     double maxWidth = 250.0;
@@ -69,7 +71,7 @@ class DrawerWidget extends StatelessWidget {
                 createTasksKey: createTasksKey,
                 viewEditSearchTasksKey: viewEditSearchTasksKey,
                 assignTasksToMembersKey: assignTasksToMembersKey,
-                evaluateTasksKey: evaluateTasksKey,
+                evaluateTasksKey: evaluateTasksKey, approveNewUserRegistrationKey: approveNewUserRegistrationKey,
               ),
             ),
             buildExpansionTile(
@@ -105,12 +107,9 @@ class DrawerWidget extends StatelessWidget {
                   title: 'Add Members in Department',
                   icon: Icons.add_box_outlined,
                   index: 3,
-                  widget: const AddMembersInDepartmentWidget(),
-                  // widget: ManageDepartment(
-                  //   createDepartmentKey: createDepartmentKey,
-                  //   viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
-                  //   addMembersInDepartmentKey: addMembersInDepartmentKey,
-                  // ),
+                  widget: AddMembersInDepartmentWidget(
+                    key: addMembersInDepartmentKey,
+                  ),
                 ),
               ],
             ),
@@ -125,14 +124,18 @@ class DrawerWidget extends StatelessWidget {
                   title: 'Approve New User Registrations',
                   icon: Icons.check,
                   index: 4,
-                  widget: const ManageMember(),
+                  widget: ManageMember(
+                    approveNewUserRegistrationKey: approveNewUserRegistrationKey,
+                  ),
                 ),
                 buildChildTile(
                   context,
                   title: 'View Assigned Tasks to Members',
                   icon: Icons.remove_red_eye,
                   index: 5,
-                  widget: const ManageMember(),
+                  widget: ManageMember(
+                    approveNewUserRegistrationKey: approveNewUserRegistrationKey,
+                  ),
                 ),
               ],
             ),
@@ -171,11 +174,8 @@ class DrawerWidget extends StatelessWidget {
                   title: 'Assign Tasks to Members',
                   icon: Icons.add_box_outlined,
                   index: 8,
-                  widget: ManageTasks(
-                    createTasksKey: createTasksKey,
-                    viewEditSearchTasksKey: viewEditSearchTasksKey,
-                    assignTasksToMembersKey: assignTasksToMembersKey,
-                    evaluateTasksKey: evaluateTasksKey,
+                  widget: AssignTasksToMembersWidget(
+                    key: assignTasksToMembersKey,
                   ),
                 ),
                 buildChildTile(
@@ -226,8 +226,7 @@ class DrawerWidget extends StatelessWidget {
           color: selectedIndex == index ? customAqua : Colors.grey,
         ),
       ),
-      leading:
-      Icon(icon, color: selectedIndex == index ? customAqua : Colors.grey),
+      leading: Icon(icon, color: selectedIndex == index ? customAqua : Colors.grey),
       selected: selectedIndex == index,
       onTap: () => onItemTapped(index, widget),
     );

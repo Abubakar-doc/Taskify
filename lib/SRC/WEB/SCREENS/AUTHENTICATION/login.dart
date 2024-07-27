@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/SRC/WEB/MODEL/authenticatiion.dart';
-import 'package:taskify/SRC/WEB/SCREENS/admin_panel.dart';
+import 'package:taskify/SRC/WEB/SCREENS/HOME/admin_panel.dart';
 import 'package:taskify/SRC/WEB/SERVICES/authentication.dart';
 import 'package:taskify/SRC/WEB/UTILS/web_utils.dart';
 import 'package:taskify/THEME/theme.dart';
@@ -111,11 +111,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               _isLoading = true;
                             });
                             try {
-                              AppUser? user = await _authService.signInWithEmailAndPassword(
+                              // Call the AuthService to sign in
+                              AuthResult result = await _authService.signInWithEmailAndPassword(
                                 _emailController.text,
                                 _passwordController.text,
                               );
-                              if (user != null) {
+
+                              if (result.user != null) {
+                                // User is authenticated and is an admin
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
@@ -124,6 +127,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       (route) => false,
                                 );
                                 WebUtils().showSuccessToast('Welcome back', context);
+                              } else if (result.errorMessage != null) {
+                                WebUtils().ErrorSnackBar(context, result.errorMessage!);
                               }
                             } on FirebaseAuthException catch (e) {
                               String errorMessage;

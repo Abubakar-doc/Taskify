@@ -271,9 +271,9 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
                   setState(() {
                     filteredTasks.removeAt(index);
                     if (action == 'Pass') {
-                      WebUtils().showSuccessToast("Task marked as completed successfully!", context);
+                      WebUtils().SuccessSnackBar(context,"Task marked as completed successfully!");
                     } else {
-                      WebUtils().showErrorToast("Task rejected!", context);
+                      WebUtils().InfoSnackBar(context,"Task rejected!");
                     }
                   });
                   Navigator.of(context).pop();

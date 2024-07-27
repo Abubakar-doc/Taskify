@@ -90,44 +90,35 @@ class WebUtils {
     }
   }
 
-  void SuccessSnackBar(BuildContext context, String message, {Duration duration = const Duration(seconds: 5)}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
+  void showCustomSnackBar(BuildContext context, String message, Color backgroundColor, Color textColor, {Duration duration = const Duration(seconds: 5)}) {
+    final snackBar = SnackBar(
+      content: Expanded(
+        child: Text(
           message,
-          style: TextStyle(color: Colors.grey.shade900),
+          style: TextStyle(color: textColor),
         ),
-        backgroundColor: Colors.green,
-        duration: duration,
       ),
+      backgroundColor: backgroundColor,
+      duration: duration,
+      behavior: SnackBarBehavior.floating, // Add this line
     );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void SuccessSnackBar(BuildContext context, String message, {Duration duration = const Duration(seconds: 5)}) {
+    showCustomSnackBar(context, message, Colors.green, Colors.grey.shade900, duration: duration);
   }
 
   void ErrorSnackBar(BuildContext context, String message, {Duration duration = const Duration(seconds: 5)}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: const TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.red.shade400,
-        duration: duration,
-      ),
-    );
+    showCustomSnackBar(context, message, Colors.red.shade400, Colors.white, duration: duration);
   }
 
   void InfoSnackBar(BuildContext context, String message, {Duration duration = const Duration(seconds: 5)}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: TextStyle(color: Colors.grey.shade900),
-        ),
-        backgroundColor: Colors.grey,
-        duration: duration,
-      ),
-    );
+    showCustomSnackBar(context, message, Colors.grey, Colors.grey.shade900, duration: duration);
   }
+
+
 
 
 }

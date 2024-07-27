@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_icons/simple_icons.dart';
-import 'package:taskify/SRC/WEB/SCREENS/login.dart';
+import 'package:taskify/SRC/WEB/SCREENS/AUTHENTICATION/login.dart';
 import 'package:taskify/THEME/theme.dart';
 
 class WelcomeScreen extends StatelessWidget {

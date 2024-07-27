@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/THEME/theme.dart';
 import 'package:drop_down_search_field/drop_down_search_field.dart';
+import 'package:taskify/SRC/WEB/SERVICES/task.dart';
+import 'package:taskify/SRC/WEB/MODEL/task.dart';
 
 class AssignTasksToMembersWidget extends StatefulWidget {
   const AssignTasksToMembersWidget({super.key});
@@ -10,37 +12,40 @@ class AssignTasksToMembersWidget extends StatefulWidget {
 }
 
 class _AssignTasksToMembersWidgetState extends State<AssignTasksToMembersWidget> {
+  final TaskService _taskService = TaskService();
   final TextEditingController _taskController = TextEditingController();
+  final TextEditingController _taskDescriptionController = TextEditingController();
   final TextEditingController _memberController = TextEditingController();
   final TextEditingController _memberEmailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // Test data
-  List<Map<String, String>> tasks = [
-    {'name': 'Task 1', 'description': 'Description for Task 1'},
-    {'name': 'Task 2', 'description': 'Description for Task 2'},
-    {'name': 'Task 3', 'description': 'Description for Task 3'},
-    {'name': 'Task 4', 'description': 'Description for Task 4'},
-    {'name': 'Task 5', 'description': 'Description for Task 5'},
-    {'name': 'Task 6', 'description': 'Description for Task 6'},
-    {'name': 'Task 7', 'description': 'Description for Task 7'},
-    {'name': 'Task 8', 'description': 'Description for Task 8'},
-    {'name': 'Task 9', 'description': 'Description for Task 9'},
-    {'name': 'Task 10', 'description': 'Description for Task 10'}
-  ];
+  List<Task> taskList = [];
   List<Map<String, String>> memberList = [
     {'name': 'John Doe', 'email': 'john.doe@example.com'},
     {'name': 'Jane Smith', 'email': 'jane.smith@example.com'},
-    {'name': 'ada Johnson', 'email': 'mike.johnson@example.com'},
-    {'name': 'bhalu Johnson', 'email': 'mike.johnson@example.com'},
+    {'name': 'Ada Johnson', 'email': 'ada.johnson@example.com'},
+    {'name': 'Bhalu Johnson', 'email': 'bhalu.johnson@example.com'},
   ];
 
-  Map<String, String> selectedTask = {};
+  Task? selectedTask;
   Map<String, String> selectedMember = {};
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _taskService.getTasksStream().listen((tasks) {
+      setState(() {
+        taskList = tasks;
+        isLoading = false;
+      });
+    });
+  }
 
   @override
   void dispose() {
     _taskController.dispose();
+    _taskDescriptionController.dispose();
     _memberController.dispose();
     _memberEmailController.dispose();
     super.dispose();
@@ -49,16 +54,23 @@ class _AssignTasksToMembersWidgetState extends State<AssignTasksToMembersWidget>
   void handleCancel() {
     setState(() {
       _taskController.clear();
+      _taskDescriptionController.clear();
       _memberController.clear();
       _memberEmailController.clear();
-      selectedTask = {};
+      selectedTask = null;
       selectedMember = {};
     });
   }
 
-  List<Map<String, String>> getTaskSuggestions(String query) {
-    return tasks
-        .where((task) => task['name']!.toLowerCase().contains(query.toLowerCase()))
+  List<String> getTaskSuggestions(String query) {
+    if (isLoading) {
+      return ['Loading...'];
+    } else if (taskList.isEmpty) {
+      return ['No tasks found'];
+    }
+    return taskList
+        .where((task) => task.title.toLowerCase().contains(query.toLowerCase()))
+        .map((task) => task.title)
         .toList();
   }
 
@@ -72,6 +84,7 @@ class _AssignTasksToMembersWidgetState extends State<AssignTasksToMembersWidget>
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topLeft,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Form(
         key: _formKey,
         child: Column(
@@ -108,15 +121,11 @@ class _AssignTasksToMembersWidgetState extends State<AssignTasksToMembersWidget>
                 controller: _taskController,
               ),
               suggestionsCallback: (pattern) {
-                return getTaskSuggestions(pattern)
-                    .map((task) => task['name']!)
-                    .toList();
+                return getTaskSuggestions(pattern);
               },
               itemBuilder: (context, String suggestion) {
-                final task = tasks.firstWhere((task) => task['name'] == suggestion);
                 return ListTile(
                   title: Text(suggestion),
-                  subtitle: Text(task['description']!),
                 );
               },
               itemSeparatorBuilder: (context, index) {
@@ -126,15 +135,18 @@ class _AssignTasksToMembersWidgetState extends State<AssignTasksToMembersWidget>
                 return suggestionsBox;
               },
               onSuggestionSelected: (String suggestion) {
-                final task = tasks.firstWhere((task) => task['name'] == suggestion);
-                setState(() {
-                  selectedTask = task;
-                  _taskController.text = suggestion;
-                });
+                if (suggestion != 'Loading...' && suggestion != 'No tasks found') {
+                  final task = taskList.firstWhere((task) => task.title == suggestion);
+                  setState(() {
+                    selectedTask = task;
+                    _taskController.text = suggestion;
+                    _taskDescriptionController.text = task.description ?? '';
+                  });
+                }
               },
               displayAllSuggestionWhenTap: true,
               validator: (value) {
-                if (value == null || value.isEmpty) {
+                if (value == null || value.isEmpty || value == 'Loading...' || value == 'No tasks found') {
                   return 'Please select a Task';
                 }
                 return null;
@@ -142,7 +154,7 @@ class _AssignTasksToMembersWidgetState extends State<AssignTasksToMembersWidget>
             ),
             const SizedBox(height: 8),
             TextField(
-              controller: TextEditingController(text: selectedTask['description']),
+              controller: _taskDescriptionController,
               enabled: false, // Disable typing
               decoration: InputDecoration(
                 filled: true,
@@ -201,7 +213,7 @@ class _AssignTasksToMembersWidgetState extends State<AssignTasksToMembersWidget>
                 final member = memberList.firstWhere((member) => member['name'] == suggestion);
                 setState(() {
                   selectedMember = member;
-                  _memberController.text = suggestion;
+                  _memberController.text = member['name']!;
                   _memberEmailController.text = member['email']!;
                 });
               },
@@ -242,7 +254,6 @@ class _AssignTasksToMembersWidgetState extends State<AssignTasksToMembersWidget>
                         child: ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              // Implement Add Member logic here
                               final task = _taskController.text;
                               final member = _memberController.text;
                               final memberEmail = _memberEmailController.text;

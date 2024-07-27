@@ -15,6 +15,7 @@ class Overview extends StatefulWidget {
   final GlobalKey viewEditSearchTasksKey;
   final GlobalKey assignTasksToMembersKey;
   final GlobalKey evaluateTasksKey;
+  final GlobalKey approveNewUserRegistrationKey;
 
   const Overview({
     super.key,
@@ -26,6 +27,7 @@ class Overview extends StatefulWidget {
     required this.viewEditSearchTasksKey,
     required this.assignTasksToMembersKey,
     required this.evaluateTasksKey,
+    required this.approveNewUserRegistrationKey, // Added key
   });
 
   @override
@@ -50,6 +52,12 @@ class _OverviewState extends State<Overview> {
     ));
   }
 
+  void _handleMembersNavigation() {
+    widget.onItemTapped(4, ManageMember(
+      approveNewUserRegistrationKey: widget.approveNewUserRegistrationKey,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -69,9 +77,7 @@ class _OverviewState extends State<Overview> {
                 child: DashboardCard(
                   title: 'View Members',
                   buttonText: 'Go to Members',
-                  onPressed: () {
-                    widget.onItemTapped(2, const ManageMember());
-                  },
+                  onPressed: _handleMembersNavigation,
                 ),
               ),
             ],

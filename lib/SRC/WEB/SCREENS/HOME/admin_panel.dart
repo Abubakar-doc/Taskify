@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_icons/simple_icons.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/MEMBER/manage_member.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/OVERVIEW/overview.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/manage_department.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/TASK/manage_tasks.dart';
@@ -17,22 +18,21 @@ class _AdminPanelState extends State<AdminPanel> {
   int _selectedIndex = 0;
   late Widget _selectedWidget;
 
+  // Define GlobalKeys
   final GlobalKey _createDepartmentKey = GlobalKey();
   final GlobalKey _viewEditSearchDepartmentsKey = GlobalKey();
   final GlobalKey _addMembersInDepartmentKey = GlobalKey();
-
   final GlobalKey _createTasksKey = GlobalKey();
   final GlobalKey _viewEditSearchTasksKey = GlobalKey();
   final GlobalKey _assignTasksToMembersKey = GlobalKey();
   final GlobalKey _evaluateTasksKey = GlobalKey();
+  final GlobalKey _approveNewUserRegistrationKey = GlobalKey(); // Added key
 
   @override
   void initState() {
     super.initState();
-    // _selectedWidget = Overview(onItemTapped: _onItemTapped);
     _selectedWidget = Overview(
       onItemTapped: _onItemTapped,
-      // Pass keys to Overview
       createDepartmentKey: _createDepartmentKey,
       viewEditSearchDepartmentsKey: _viewEditSearchDepartmentsKey,
       addMembersInDepartmentKey: _addMembersInDepartmentKey,
@@ -40,6 +40,7 @@ class _AdminPanelState extends State<AdminPanel> {
       viewEditSearchTasksKey: _viewEditSearchTasksKey,
       assignTasksToMembersKey: _assignTasksToMembersKey,
       evaluateTasksKey: _evaluateTasksKey,
+      approveNewUserRegistrationKey: _approveNewUserRegistrationKey, // Added key
     );
   }
 
@@ -58,6 +59,10 @@ class _AdminPanelState extends State<AdminPanel> {
           viewEditSearchTasksKey: _viewEditSearchTasksKey,
           assignTasksToMembersKey: _assignTasksToMembersKey,
           evaluateTasksKey: _evaluateTasksKey,
+        );
+      } else if (widget is ManageMember) {
+        _selectedWidget = ManageMember(
+          approveNewUserRegistrationKey: _approveNewUserRegistrationKey,
         );
       } else {
         _selectedWidget = widget;
@@ -181,6 +186,7 @@ class _AdminPanelState extends State<AdminPanel> {
             viewEditSearchTasksKey: _viewEditSearchTasksKey,
             assignTasksToMembersKey: _assignTasksToMembersKey,
             evaluateTasksKey: _evaluateTasksKey,
+            approveNewUserRegistrationKey: _approveNewUserRegistrationKey, // Added key
           ),
           Expanded(
             child: Padding(
