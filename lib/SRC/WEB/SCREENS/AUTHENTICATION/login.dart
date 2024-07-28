@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:taskify/SRC/WEB/MODEL/authenticatiion.dart';
+import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
 import 'package:taskify/SRC/WEB/SCREENS/HOME/admin_panel.dart';
 import 'package:taskify/SRC/WEB/SERVICES/authentication.dart';
-import 'package:taskify/SRC/WEB/UTILS/web_utils.dart';
 import 'package:taskify/THEME/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -126,9 +125,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                       (route) => false,
                                 );
-                                WebUtils().showSuccessToast('Welcome back', context);
+                                Utils().showSuccessToast('Welcome back', context);
                               } else if (result.errorMessage != null) {
-                                WebUtils().ErrorSnackBar(context, result.errorMessage!);
+                                Utils().ErrorSnackBar(context, result.errorMessage!);
                               }
                             } on FirebaseAuthException catch (e) {
                               String errorMessage;

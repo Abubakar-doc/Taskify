@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskify/SRC/WEB/UTILS/web_utils.dart';
+import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
 import 'package:taskify/THEME/theme.dart';
 
 class EvaluateTasksWidget extends StatefulWidget {
@@ -271,9 +271,9 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
                   setState(() {
                     filteredTasks.removeAt(index);
                     if (action == 'Pass') {
-                      WebUtils().SuccessSnackBar(context,"Task marked as completed successfully!");
+                      Utils().SuccessSnackBar(context,"Task marked as completed successfully!");
                     } else {
-                      WebUtils().InfoSnackBar(context,"Task rejected!");
+                      Utils().InfoSnackBar(context,"Task rejected!");
                     }
                   });
                   Navigator.of(context).pop();

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
 import 'package:taskify/SRC/WEB/MODEL/task.dart';
 import 'package:taskify/SRC/WEB/SERVICES/task.dart';
-import 'package:taskify/SRC/WEB/UTILS/web_utils.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/hoverable_stretched_aqua_button.dart';
 import 'package:taskify/THEME/theme.dart';
 
@@ -122,7 +122,7 @@ class _CreateTasksWidgetState extends State<CreateTasksWidget> {
         _titleController.clear();
         _descriptionController.clear();
 
-        WebUtils().SuccessSnackBar(
+        Utils().SuccessSnackBar(
           context,
           "Task has been successfully created!",
         );
@@ -130,7 +130,7 @@ class _CreateTasksWidgetState extends State<CreateTasksWidget> {
         setState(() {
           _errorMessage = 'Failed to create task: $e';
         });
-        WebUtils().ErrorSnackBar(
+        Utils().ErrorSnackBar(
           context,
           'Failed to create task: $e',
         );

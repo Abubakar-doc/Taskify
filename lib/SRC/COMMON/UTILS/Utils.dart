@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class WebUtils {
+class Utils {
   OverlayEntry? _overlayEntry;
 
   void showErrorToast(String message, BuildContext context) {

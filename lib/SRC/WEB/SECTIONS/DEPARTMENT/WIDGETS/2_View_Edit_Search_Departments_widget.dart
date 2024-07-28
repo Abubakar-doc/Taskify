@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
 import 'package:taskify/SRC/WEB/MODEL/department.dart';
 import 'package:taskify/SRC/WEB/SERVICES/department.dart';
-import 'package:taskify/SRC/WEB/UTILS/web_utils.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/small_widgets.dart';
 import 'package:taskify/THEME/theme.dart';
 
@@ -106,7 +106,7 @@ class _ViewEditSearchDepartmentsWidgetState
                 children: [
                   _buildTableHeader(),
                   if (isLoading)
-                    LoadingPlaceholder()
+                    const LoadingPlaceholder()
                   else
                     ListView.builder(
                       shrinkWrap: true,
@@ -252,7 +252,7 @@ class _ViewEditSearchDepartmentsWidgetState
                               isLoading = false; // End loading
                             });
                             Navigator.of(context).pop();
-                            WebUtils().SuccessSnackBar(context,
+                            Utils().SuccessSnackBar(context,
                                 'The department "${department.name}" has been updated to "$updatedName".');
                           }
                         },
@@ -325,7 +325,7 @@ class _ViewEditSearchDepartmentsWidgetState
                                 (dept) => dept.id == department.id);
                           });
                           Navigator.of(context).pop();
-                          WebUtils().InfoSnackBar(
+                          Utils().InfoSnackBar(
                             context,
                             'The department "${department.name}" has been successfully deleted.',
                           );

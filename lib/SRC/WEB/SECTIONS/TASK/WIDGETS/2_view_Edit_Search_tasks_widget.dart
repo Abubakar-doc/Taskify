@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
 import 'package:taskify/SRC/WEB/SERVICES/task.dart';
-import 'package:taskify/SRC/WEB/UTILS/web_utils.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/small_widgets.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/task_table_list_item.dart';
 import 'package:taskify/THEME/theme.dart';
@@ -106,7 +106,7 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
                 children: [
                   _buildTableHeader(),
                   if (isLoading)
-                    LoadingPlaceholder()
+                    const LoadingPlaceholder()
                   else
                     ListView.builder(
                       shrinkWrap: true,
@@ -280,12 +280,12 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
 
                         await _taskService.updateTask(updatedTask);
 
-                        WebUtils().SuccessSnackBar(
+                        Utils().SuccessSnackBar(
                           context,
                           "Task has been successfully updated!",
                         );
                       } catch (e) {
-                        WebUtils().ErrorSnackBar(
+                        Utils().ErrorSnackBar(
                           context,
                           'Failed to update task: $e',
                         );
@@ -355,12 +355,12 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
                     try {
                       await _taskService.deleteTask(taskId);
                       Navigator.of(context).pop();
-                      WebUtils().InfoSnackBar(
+                      Utils().InfoSnackBar(
                         context,
                         "Task has been successfully deleted!",
                       );
                     } catch (e) {
-                      WebUtils().ErrorSnackBar(
+                      Utils().ErrorSnackBar(
                         context,
                         "Failed to delete task. Please try again.",
                       );

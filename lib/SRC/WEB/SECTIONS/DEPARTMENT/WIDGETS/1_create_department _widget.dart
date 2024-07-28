@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
 import 'package:taskify/SRC/WEB/MODEL/department.dart';
 import 'package:taskify/SRC/WEB/SERVICES/department.dart';
-import 'package:taskify/SRC/WEB/UTILS/web_utils.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/hoverable_stretched_aqua_button.dart';
 import 'package:taskify/THEME/theme.dart';
 
@@ -85,14 +85,14 @@ class _CreateDepartmentWidgetState extends State<CreateDepartmentWidget> {
 
                         try {
                           await _departmentService.createDepartment(department);
-                          WebUtils().SuccessSnackBar(
+                          Utils().SuccessSnackBar(
                               context,
                               'The department "$departmentName" has been successfully created!'
                           );
                           _formKey.currentState!.reset();
                           _departmentNameController.clear();
                         } catch (e) {
-                          WebUtils().ErrorSnackBar(
+                          Utils().ErrorSnackBar(
                               context, 'Failed to create department, $e');
                         } finally {
                           setState(() {
