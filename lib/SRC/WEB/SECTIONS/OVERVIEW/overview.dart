@@ -16,6 +16,8 @@ class Overview extends StatefulWidget {
   final GlobalKey assignTasksToMembersKey;
   final GlobalKey evaluateTasksKey;
   final GlobalKey approveNewUserRegistrationKey;
+  final GlobalKey activeMemberKey;
+  final GlobalKey rejectedMemberKey;
 
   const Overview({
     super.key,
@@ -27,7 +29,9 @@ class Overview extends StatefulWidget {
     required this.viewEditSearchTasksKey,
     required this.assignTasksToMembersKey,
     required this.evaluateTasksKey,
-    required this.approveNewUserRegistrationKey, // Added key
+    required this.approveNewUserRegistrationKey,
+    required this.activeMemberKey,
+    required this.rejectedMemberKey,
   });
 
   @override
@@ -36,26 +40,37 @@ class Overview extends StatefulWidget {
 
 class _OverviewState extends State<Overview> {
   void _handleDepartmentNavigation() {
-    widget.onItemTapped(1, ManageDepartment(
-      createDepartmentKey: widget.createDepartmentKey,
-      viewEditSearchDepartmentsKey: widget.viewEditSearchDepartmentsKey,
-      addMembersInDepartmentKey: widget.addMembersInDepartmentKey,
-    ));
+    widget.onItemTapped(
+      1,
+      ManageDepartment(
+        createDepartmentKey: widget.createDepartmentKey,
+        viewEditSearchDepartmentsKey: widget.viewEditSearchDepartmentsKey,
+        addMembersInDepartmentKey: widget.addMembersInDepartmentKey,
+      ),
+    );
   }
 
   void _handleTasksNavigation() {
-    widget.onItemTapped(6, ManageTasks(
-      createTasksKey: widget.createTasksKey,
-      viewEditSearchTasksKey: widget.viewEditSearchTasksKey,
-      assignTasksToMembersKey: widget.assignTasksToMembersKey,
-      evaluateTasksKey: widget.evaluateTasksKey,
-    ));
+    widget.onItemTapped(
+      6,
+      ManageTasks(
+        createTasksKey: widget.createTasksKey,
+        viewEditSearchTasksKey: widget.viewEditSearchTasksKey,
+        assignTasksToMembersKey: widget.assignTasksToMembersKey,
+        evaluateTasksKey: widget.evaluateTasksKey,
+      ),
+    );
   }
 
   void _handleMembersNavigation() {
-    widget.onItemTapped(4, ManageMember(
-      approveNewUserRegistrationKey: widget.approveNewUserRegistrationKey,
-    ));
+    widget.onItemTapped(
+      4,
+      ManageMember(
+        approveNewUserRegistrationKey: widget.approveNewUserRegistrationKey,
+        activeMemberKey: widget.activeMemberKey,
+        rejectedMemberKey: widget.rejectedMemberKey,
+      ),
+    );
   }
 
   @override
