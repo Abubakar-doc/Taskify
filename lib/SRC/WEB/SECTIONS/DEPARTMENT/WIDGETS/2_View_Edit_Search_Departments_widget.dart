@@ -38,7 +38,7 @@ class _ViewEditSearchDepartmentsWidgetState
   }
 
   void _loadDepartments() {
-    _departmentService.getDepartments().listen((departmentsList) {
+    _departmentService.getDepartmentsForViewDepartmentTable().listen((departmentsList) {
       setState(() {
         departments = departmentsList;
         filteredDepartments = List.from(departments);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/WIDGETS/3_add_members_in_department_Widget.dart';
+import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/WIDGETS/4_members_and_department_Widget.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/manage_department.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/MEMBER/manage_member.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/REPORT/manage_reports.dart';
@@ -21,9 +21,7 @@ class DrawerWidget extends StatelessWidget {
   final GlobalKey viewEditSearchTasksKey;
   final GlobalKey assignTasksToMembersKey;
   final GlobalKey evaluateTasksKey;
-  final GlobalKey approveNewUserRegistrationKey;
-  final GlobalKey activeMemberKey;
-  final GlobalKey rejectedMemberKey;
+  final GlobalKey manageUserRegistrations;
 
   const DrawerWidget({
     super.key,
@@ -36,9 +34,7 @@ class DrawerWidget extends StatelessWidget {
     required this.viewEditSearchTasksKey,
     required this.assignTasksToMembersKey,
     required this.evaluateTasksKey,
-    required this.approveNewUserRegistrationKey,
-    required this.activeMemberKey,
-    required this.rejectedMemberKey,
+    required this.manageUserRegistrations,
   });
 
   @override
@@ -76,16 +72,14 @@ class DrawerWidget extends StatelessWidget {
                 viewEditSearchTasksKey: viewEditSearchTasksKey,
                 assignTasksToMembersKey: assignTasksToMembersKey,
                 evaluateTasksKey: evaluateTasksKey,
-                approveNewUserRegistrationKey: approveNewUserRegistrationKey,
-                activeMemberKey: activeMemberKey,
-                rejectedMemberKey: rejectedMemberKey,
+                manageUserRegistrations: manageUserRegistrations,
               ),
             ),
             buildExpansionTile(
               context,
               title: 'Manage Departments',
               icon: Icons.business,
-              indices: [1, 2, 3],
+              indices: [1, 2, 3, 4],
               children: [
                 buildChildTile(
                   context,
@@ -114,9 +108,18 @@ class DrawerWidget extends StatelessWidget {
                   title: 'Add Members in Department',
                   icon: Icons.add_box_outlined,
                   index: 3,
-                  widget: AddMembersInDepartmentWidget(
-                    key: addMembersInDepartmentKey,
+                  widget: ManageDepartment(
+                    createDepartmentKey: createDepartmentKey,
+                    viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
+                    addMembersInDepartmentKey: addMembersInDepartmentKey,
                   ),
+                ),
+                buildChildTile(
+                  context,
+                  title: 'Departments and Members',
+                  icon: Icons.remove_red_eye,
+                  index: 4,
+                  widget: MembersAndDepartmentsWidget()
                 ),
               ],
             ),
@@ -124,50 +127,24 @@ class DrawerWidget extends StatelessWidget {
               context,
               title: 'Manage Members',
               icon: Icons.person,
-              indices: [4, 5, 6, 7], // Update indices
+              indices: [5, 6], // Update indices
               children: [
                 buildChildTile(
                   context,
-                  title: 'Approve New User Registrations',
+                  title: 'Manage User Registrations',
                   icon: Icons.check,
-                  index: 4,
-                  widget: ManageMember(
-                    approveNewUserRegistrationKey: approveNewUserRegistrationKey,
-                    activeMemberKey: activeMemberKey,
-                    rejectedMemberKey: rejectedMemberKey,
-                  ),
-                ),
-                buildChildTile(
-                  context,
-                  title: 'View Active Members',
-                  icon: Icons.person,
                   index: 5,
                   widget: ManageMember(
-                    approveNewUserRegistrationKey: approveNewUserRegistrationKey,
-                    activeMemberKey: activeMemberKey,
-                    rejectedMemberKey: rejectedMemberKey,
-                  ),
-                ),
-                buildChildTile(
-                  context,
-                  title: 'View Rejected Members',
-                  icon: Icons.person_off_rounded,
-                  index: 6,
-                  widget: ManageMember(
-                    approveNewUserRegistrationKey: approveNewUserRegistrationKey,
-                    activeMemberKey: activeMemberKey,
-                    rejectedMemberKey: rejectedMemberKey,
+                    manageUserRegistrations: manageUserRegistrations,
                   ),
                 ),
                 buildChildTile(
                   context,
                   title: 'View Assigned Tasks to Members',
                   icon: Icons.remove_red_eye,
-                  index: 7,
+                  index: 6,
                   widget: ManageMember(
-                    approveNewUserRegistrationKey: approveNewUserRegistrationKey,
-                    activeMemberKey: activeMemberKey,
-                    rejectedMemberKey: rejectedMemberKey,
+                    manageUserRegistrations: manageUserRegistrations,
                   ),
                 ),
               ],
@@ -176,13 +153,13 @@ class DrawerWidget extends StatelessWidget {
               context,
               title: 'Manage Tasks',
               icon: Icons.task,
-              indices: [8, 9, 10, 11],
+              indices: [7, 8, 9, 10],
               children: [
                 buildChildTile(
                   context,
                   title: 'Create Tasks',
                   icon: Icons.add,
-                  index: 8,
+                  index: 7,
                   widget: ManageTasks(
                     createTasksKey: createTasksKey,
                     viewEditSearchTasksKey: viewEditSearchTasksKey,
@@ -194,7 +171,7 @@ class DrawerWidget extends StatelessWidget {
                   context,
                   title: 'View Tasks',
                   icon: Icons.remove_red_eye,
-                  index: 9,
+                  index: 8,
                   widget: ManageTasks(
                     createTasksKey: createTasksKey,
                     viewEditSearchTasksKey: viewEditSearchTasksKey,
@@ -206,7 +183,7 @@ class DrawerWidget extends StatelessWidget {
                   context,
                   title: 'Assign Tasks to Members',
                   icon: Icons.add_box_outlined,
-                  index: 10,
+                  index: 9,
                   widget: AssignTasksToMembersWidget(
                     key: assignTasksToMembersKey,
                   ),
@@ -215,7 +192,7 @@ class DrawerWidget extends StatelessWidget {
                   context,
                   title: 'Evaluate Tasks',
                   icon: Icons.check,
-                  index: 11,
+                  index: 10,
                   widget: ManageTasks(
                     createTasksKey: createTasksKey,
                     viewEditSearchTasksKey: viewEditSearchTasksKey,
@@ -229,14 +206,14 @@ class DrawerWidget extends StatelessWidget {
               context,
               title: 'Manage Reports',
               icon: Icons.file_copy_outlined,
-              index: 12,
+              index: 11,
               widget: const ManageReports(),
             ),
             buildTile(
               context,
               title: 'Settings',
               icon: Icons.settings,
-              index: 13,
+              index: 12,
               widget: const Settings(),
             ),
           ],

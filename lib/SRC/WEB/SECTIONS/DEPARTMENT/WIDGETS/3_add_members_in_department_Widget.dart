@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
 import 'package:taskify/SRC/WEB/SERVICES/department.dart';
+import 'package:taskify/SRC/WEB/SERVICES/member.dart';
 import 'package:taskify/THEME/theme.dart';
 import 'package:drop_down_search_field/drop_down_search_field.dart';
 import 'package:taskify/SRC/WEB/MODEL/department.dart';
+import 'package:taskify/SRC/COMMON/MODEL/Member.dart';
 
 class AddMembersInDepartmentWidget extends StatefulWidget {
   const AddMembersInDepartmentWidget({super.key});
@@ -20,26 +23,27 @@ class _AddMembersInDepartmentWidgetState
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final DepartmentService _departmentService = DepartmentService();
+  final MemberService _memberService = MemberService();
 
   List<Department> departmentList = [];
-  List<Map<String, String>> memberList = [
-    {'name': 'John Doe', 'email': 'john.doe@example.com'},
-    {'name': 'Jane Smith', 'email': 'jane.smith@example.com'},
-    {'name': 'Ada Johnson', 'email': 'ada.johnson@example.com'},
-    {'name': 'Bhalu Johnson', 'email': 'bhalu.johnson@example.com'},
-  ];
-
-  String? selectedDepartment;
-  Map<String, String> selectedMember = {};
+  List<UserModel> memberList = [];
+  Department? selectedDepartment;
+  UserModel? selectedMember;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _departmentService.getDepartments().listen((departments) {
+    _departmentService.getDepartmentsForDropDown().listen((departments) {
       setState(() {
         departmentList = departments;
         isLoading = false;
+      });
+    });
+
+    _memberService.getApprovedMembersHavingNoDepartment().listen((members) {
+      setState(() {
+        memberList = members;
       });
     });
   }
@@ -58,7 +62,7 @@ class _AddMembersInDepartmentWidgetState
       _memberController.clear();
       _memberEmailController.clear();
       selectedDepartment = null;
-      selectedMember = {};
+      selectedMember = null;
     });
   }
 
@@ -74,10 +78,10 @@ class _AddMembersInDepartmentWidgetState
         .toList();
   }
 
-  List<Map<String, String>> getMemberSuggestions(String query) {
+  List<UserModel> getMemberSuggestions(String query) {
     return memberList
         .where((member) =>
-        member['name']!.toLowerCase().contains(query.toLowerCase()))
+        member.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
   }
 
@@ -138,7 +142,8 @@ class _AddMembersInDepartmentWidgetState
               onSuggestionSelected: (String suggestion) {
                 if (suggestion != 'Loading...' && suggestion != 'No departments found') {
                   setState(() {
-                    selectedDepartment = suggestion;
+                    selectedDepartment = departmentList
+                        .firstWhere((dept) => dept.name == suggestion);
                     _departmentController.text = suggestion;
                   });
                 }
@@ -179,15 +184,15 @@ class _AddMembersInDepartmentWidgetState
               ),
               suggestionsCallback: (pattern) {
                 return getMemberSuggestions(pattern)
-                    .map((member) => member['name']!)
+                    .map((member) => member.name)
                     .toList();
               },
               itemBuilder: (context, String suggestion) {
                 final member = memberList
-                    .firstWhere((member) => member['name'] == suggestion);
+                    .firstWhere((member) => member.name == suggestion);
                 return ListTile(
                   title: Text(suggestion),
-                  subtitle: Text(member['email']!),
+                  subtitle: Text(member.email),
                 );
               },
               itemSeparatorBuilder: (context, index) {
@@ -198,11 +203,11 @@ class _AddMembersInDepartmentWidgetState
               },
               onSuggestionSelected: (String suggestion) {
                 final member = memberList
-                    .firstWhere((member) => member['name'] == suggestion);
+                    .firstWhere((member) => member.name == suggestion);
                 setState(() {
                   selectedMember = member;
-                  _memberController.text = member['name']!;
-                  _memberEmailController.text = member['email']!;
+                  _memberController.text = member.name;
+                  _memberEmailController.text = member.email;
                 });
               },
               displayAllSuggestionWhenTap: true,
@@ -240,14 +245,18 @@ class _AddMembersInDepartmentWidgetState
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              // Implement Add Member logic here
                               final department = _departmentController.text;
                               final member = _memberController.text;
                               final memberEmail = _memberEmailController.text;
-                              // Perform the add member logic with department, member, and memberEmail
-                              print('Member Added: $member to Department: $department with Email: $memberEmail');
+
+                              // Get the department ID from the selectedDepartment object
+                              final departmentId = selectedDepartment?.id;
+                              if (selectedMember != null && departmentId != null) {
+                                // Show confirmation dialog before adding the member
+                                _showAddMemberConfirmationDialog(context,selectedMember!, selectedDepartment!);
+                              }
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -268,9 +277,11 @@ class _AddMembersInDepartmentWidgetState
                       const SizedBox(width: 16),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: handleCancel,
+                          onPressed: () {
+                            handleCancel();
+                          },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey,
+                            backgroundColor: customAqua,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -292,6 +303,82 @@ class _AddMembersInDepartmentWidgetState
           ],
         ),
       ),
+    );
+  }
+
+  void _showAddMemberConfirmationDialog(BuildContext context ,UserModel member, Department department) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        bool isLoading = false;
+
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return AlertDialog(
+              title: const Text('Add Member to Department'),
+              backgroundColor: customLightGrey,
+              content: Text(
+                'Are you sure you want to add ${member.name} to the department ${department.name}?',
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: customAqua),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: isLoading
+                      ? null
+                      : () async {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    try {
+                      await _memberService.updateUserDepartment(member.uid, department.id);
+                      Navigator.of(context).pop();
+                      Utils().SuccessSnackBar(
+                        context,
+                        'The member "${member.name}" has been successfully added to the department "${department.name}".',
+                      );
+                    } catch (error) {
+                      Utils().ErrorSnackBar(
+                        context,
+                        'Failed to add the member "${member.name}" to the department "${department.name}". Please try again.',
+                      );
+                    } finally {
+                      setState(() {
+                        isLoading = false;
+                      });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: customAqua,
+                  ),
+                  child: isLoading
+                      ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                      : const Text(
+                    'Add',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

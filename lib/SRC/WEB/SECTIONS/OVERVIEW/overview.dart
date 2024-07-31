@@ -15,9 +15,7 @@ class Overview extends StatefulWidget {
   final GlobalKey viewEditSearchTasksKey;
   final GlobalKey assignTasksToMembersKey;
   final GlobalKey evaluateTasksKey;
-  final GlobalKey approveNewUserRegistrationKey;
-  final GlobalKey activeMemberKey;
-  final GlobalKey rejectedMemberKey;
+  final GlobalKey manageUserRegistrations;
 
   const Overview({
     super.key,
@@ -29,9 +27,7 @@ class Overview extends StatefulWidget {
     required this.viewEditSearchTasksKey,
     required this.assignTasksToMembersKey,
     required this.evaluateTasksKey,
-    required this.approveNewUserRegistrationKey,
-    required this.activeMemberKey,
-    required this.rejectedMemberKey,
+    required this.manageUserRegistrations,
   });
 
   @override
@@ -66,9 +62,7 @@ class _OverviewState extends State<Overview> {
     widget.onItemTapped(
       4,
       ManageMember(
-        approveNewUserRegistrationKey: widget.approveNewUserRegistrationKey,
-        activeMemberKey: widget.activeMemberKey,
-        rejectedMemberKey: widget.rejectedMemberKey,
+        manageUserRegistrations: widget.manageUserRegistrations,
       ),
     );
   }

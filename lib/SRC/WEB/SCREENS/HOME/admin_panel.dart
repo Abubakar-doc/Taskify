@@ -26,9 +26,7 @@ class _AdminPanelState extends State<AdminPanel> {
   final GlobalKey _viewEditSearchTasksKey = GlobalKey();
   final GlobalKey _assignTasksToMembersKey = GlobalKey();
   final GlobalKey _evaluateTasksKey = GlobalKey();
-  final GlobalKey _approveNewUserRegistrationKey = GlobalKey();
-  final GlobalKey _activeMemberKey = GlobalKey();
-  final GlobalKey _rejectedMemberKey = GlobalKey();
+  final GlobalKey manageUserRegistrations = GlobalKey();
 
   @override
   void initState() {
@@ -42,9 +40,7 @@ class _AdminPanelState extends State<AdminPanel> {
       viewEditSearchTasksKey: _viewEditSearchTasksKey,
       assignTasksToMembersKey: _assignTasksToMembersKey,
       evaluateTasksKey: _evaluateTasksKey,
-      approveNewUserRegistrationKey: _approveNewUserRegistrationKey,
-      activeMemberKey: _activeMemberKey,
-      rejectedMemberKey: _rejectedMemberKey,
+      manageUserRegistrations: manageUserRegistrations,
     );
   }
 
@@ -66,9 +62,7 @@ class _AdminPanelState extends State<AdminPanel> {
         );
       } else if (widget is ManageMember) {
         _selectedWidget = ManageMember(
-          approveNewUserRegistrationKey: _approveNewUserRegistrationKey,
-          activeMemberKey: _activeMemberKey,
-          rejectedMemberKey: _rejectedMemberKey,
+          manageUserRegistrations: manageUserRegistrations,
         );
       } else {
         _selectedWidget = widget;
@@ -107,13 +101,7 @@ class _AdminPanelState extends State<AdminPanel> {
       } else if (widget is ManageMember) {
         switch (index) {
           case 4:
-            _scrollToSection(_approveNewUserRegistrationKey);
-            break;
-          case 5:
-            _scrollToSection(_activeMemberKey);
-            break;
-          case 6:
-            _scrollToSection(_rejectedMemberKey);
+            _scrollToSection(manageUserRegistrations);
             break;
         }
       }
@@ -198,13 +186,7 @@ class _AdminPanelState extends State<AdminPanel> {
               } else if (widget is ManageMember) {
                 switch (index) {
                   case 4:
-                    _scrollToSection(_approveNewUserRegistrationKey);
-                    break;
-                  case 5:
-                    _scrollToSection(_activeMemberKey);
-                    break;
-                  case 6:
-                    _scrollToSection(_rejectedMemberKey);
+                    _scrollToSection(manageUserRegistrations);
                     break;
                 }
               }
@@ -216,9 +198,7 @@ class _AdminPanelState extends State<AdminPanel> {
             viewEditSearchTasksKey: _viewEditSearchTasksKey,
             assignTasksToMembersKey: _assignTasksToMembersKey,
             evaluateTasksKey: _evaluateTasksKey,
-            approveNewUserRegistrationKey: _approveNewUserRegistrationKey,
-            activeMemberKey: _activeMemberKey,
-            rejectedMemberKey: _rejectedMemberKey,
+            manageUserRegistrations: manageUserRegistrations,
           ),
           Expanded(
             child: Padding(

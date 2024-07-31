@@ -92,15 +92,24 @@ class Utils {
 
   void showCustomSnackBar(BuildContext context, String message, Color backgroundColor, Color textColor, {Duration duration = const Duration(seconds: 5)}) {
     final snackBar = SnackBar(
-      content: Expanded(
-        child: Text(
-          message,
-          style: TextStyle(color: textColor),
+      content: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.9,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxHeight: 100,
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text(
+              message,
+              style: TextStyle(color: textColor),
+            ),
+          ),
         ),
       ),
       backgroundColor: backgroundColor,
       duration: duration,
-      behavior: SnackBarBehavior.floating, // Add this line
+      behavior: SnackBarBehavior.floating,
     );
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);

@@ -84,7 +84,6 @@ class _AssignTasksToMembersWidgetState extends State<AssignTasksToMembersWidget>
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topLeft,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Form(
         key: _formKey,
         child: Column(
