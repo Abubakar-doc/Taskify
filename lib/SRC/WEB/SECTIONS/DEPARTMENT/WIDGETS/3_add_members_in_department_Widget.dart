@@ -29,7 +29,8 @@ class _AddMembersInDepartmentWidgetState
   List<UserModel> memberList = [];
   Department? selectedDepartment;
   UserModel? selectedMember;
-  bool isLoading = true;
+  bool isLoadingDepartments = true;
+  bool isLoadingMembers = true;
 
   @override
   void initState() {
@@ -37,13 +38,14 @@ class _AddMembersInDepartmentWidgetState
     _departmentService.getDepartmentsForDropDown().listen((departments) {
       setState(() {
         departmentList = departments;
-        isLoading = false;
+        isLoadingDepartments = false;
       });
     });
 
     _memberService.getApprovedMembersHavingNoDepartment().listen((members) {
       setState(() {
         memberList = members;
+        isLoadingMembers = false;
       });
     });
   }
@@ -67,7 +69,7 @@ class _AddMembersInDepartmentWidgetState
   }
 
   List<String> getDepartmentSuggestions(String query) {
-    if (isLoading) {
+    if (isLoadingDepartments) {
       return ['Loading...'];
     } else if (departmentList.isEmpty) {
       return ['No departments found'];
@@ -79,9 +81,14 @@ class _AddMembersInDepartmentWidgetState
   }
 
   List<UserModel> getMemberSuggestions(String query) {
+    if (isLoadingMembers) {
+      return [];
+    } else if (memberList.isEmpty) {
+      return [];
+    }
     return memberList
-        .where((member) =>
-        member.name.toLowerCase().contains(query.toLowerCase()))
+        .where(
+            (member) => member.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
   }
 
@@ -89,7 +96,6 @@ class _AddMembersInDepartmentWidgetState
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topLeft,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Form(
         key: _formKey,
         child: Column(
@@ -140,7 +146,8 @@ class _AddMembersInDepartmentWidgetState
                 return suggestionsBox;
               },
               onSuggestionSelected: (String suggestion) {
-                if (suggestion != 'Loading...' && suggestion != 'No departments found') {
+                if (suggestion != 'Loading...' &&
+                    suggestion != 'No departments found') {
                   setState(() {
                     selectedDepartment = departmentList
                         .firstWhere((dept) => dept.name == suggestion);
@@ -183,17 +190,32 @@ class _AddMembersInDepartmentWidgetState
                 controller: _memberController,
               ),
               suggestionsCallback: (pattern) {
+                if (isLoadingMembers) {
+                  return ['Loading...'];
+                } else if (memberList.isEmpty) {
+                  return ['No members found'];
+                }
                 return getMemberSuggestions(pattern)
                     .map((member) => member.name)
                     .toList();
               },
               itemBuilder: (context, String suggestion) {
-                final member = memberList
-                    .firstWhere((member) => member.name == suggestion);
-                return ListTile(
-                  title: Text(suggestion),
-                  subtitle: Text(member.email),
-                );
+                if (suggestion == 'Loading...') {
+                  return const ListTile(
+                    title: Text('Loading...'),
+                  );
+                } else if (suggestion == 'No members found') {
+                  return const ListTile(
+                    title: Text('No members found'),
+                  );
+                } else {
+                  final member = memberList
+                      .firstWhere((member) => member.name == suggestion);
+                  return ListTile(
+                    title: Text(suggestion),
+                    subtitle: Text(member.email),
+                  );
+                }
               },
               itemSeparatorBuilder: (context, index) {
                 return const Divider();
@@ -202,13 +224,16 @@ class _AddMembersInDepartmentWidgetState
                 return suggestionsBox;
               },
               onSuggestionSelected: (String suggestion) {
-                final member = memberList
-                    .firstWhere((member) => member.name == suggestion);
-                setState(() {
-                  selectedMember = member;
-                  _memberController.text = member.name;
-                  _memberEmailController.text = member.email;
-                });
+                if (suggestion != 'Loading...' &&
+                    suggestion != 'No members found') {
+                  final member = memberList
+                      .firstWhere((member) => member.name == suggestion);
+                  setState(() {
+                    selectedMember = member;
+                    _memberController.text = member.name;
+                    _memberEmailController.text = member.email;
+                  });
+                }
               },
               displayAllSuggestionWhenTap: true,
               validator: (value) {
@@ -253,9 +278,11 @@ class _AddMembersInDepartmentWidgetState
 
                               // Get the department ID from the selectedDepartment object
                               final departmentId = selectedDepartment?.id;
-                              if (selectedMember != null && departmentId != null) {
+                              if (selectedMember != null &&
+                                  departmentId != null) {
                                 // Show confirmation dialog before adding the member
-                                _showAddMemberConfirmationDialog(context,selectedMember!, selectedDepartment!);
+                                _showAddMemberConfirmationDialog(context,
+                                    selectedMember!, selectedDepartment!);
                               }
                             }
                           },
@@ -306,7 +333,8 @@ class _AddMembersInDepartmentWidgetState
     );
   }
 
-  void _showAddMemberConfirmationDialog(BuildContext context ,UserModel member, Department department) {
+  void _showAddMemberConfirmationDialog(
+      BuildContext context, UserModel member, Department department) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -340,12 +368,15 @@ class _AddMembersInDepartmentWidgetState
                       isLoading = true;
                     });
                     try {
-                      await _memberService.updateUserDepartment(member.uid, department.id);
+                      await _memberService.updateUserDepartment(
+                          member.uid, department.id);
                       Navigator.of(context).pop();
                       Utils().SuccessSnackBar(
                         context,
                         'The member "${member.name}" has been successfully added to the department "${department.name}".',
                       );
+                      // Clear the form after successful addition
+                      handleCancel();
                     } catch (error) {
                       Utils().ErrorSnackBar(
                         context,
