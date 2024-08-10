@@ -11,19 +11,15 @@ class ManageMember extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Container(
-          width: double.infinity,
-          alignment: Alignment.topLeft,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ManageMemberRegistrationWidget(key: manageUserRegistrations),
-            ],
-          ),
+    return Container(
+      alignment: Alignment.topLeft,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ManageMemberRegistrationWidget(key: manageUserRegistrations),
+          ],
         ),
       ),
     );

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:taskify/main_web.dart';
 import 'firebase_options.dart';
 import 'package:taskify/THEME/theme_provider.dart';
 import 'package:taskify/main_mobile.dart';
-import 'package:taskify/main_web.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

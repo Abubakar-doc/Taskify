@@ -21,10 +21,8 @@ class _AddMembersInDepartmentWidgetState
   final TextEditingController _memberController = TextEditingController();
   final TextEditingController _memberEmailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   final DepartmentService _departmentService = DepartmentService();
   final MemberService _memberService = MemberService();
-
   List<Department> departmentList = [];
   List<UserModel> memberList = [];
   Department? selectedDepartment;

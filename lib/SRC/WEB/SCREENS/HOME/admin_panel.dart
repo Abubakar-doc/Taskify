@@ -27,6 +27,7 @@ class _AdminPanelState extends State<AdminPanel> {
   final GlobalKey _assignTasksToMembersKey = GlobalKey();
   final GlobalKey _evaluateTasksKey = GlobalKey();
   final GlobalKey manageUserRegistrations = GlobalKey();
+  final GlobalKey membersAndDepartmentKey = GlobalKey();
 
   @override
   void initState() {
@@ -41,35 +42,16 @@ class _AdminPanelState extends State<AdminPanel> {
       assignTasksToMembersKey: _assignTasksToMembersKey,
       evaluateTasksKey: _evaluateTasksKey,
       manageUserRegistrations: manageUserRegistrations,
+      membersAndDepartmentKey: membersAndDepartmentKey,
     );
   }
 
   void _onItemTapped(int index, Widget widget) {
     setState(() {
       _selectedIndex = index;
-      if (widget is ManageDepartment) {
-        _selectedWidget = ManageDepartment(
-          createDepartmentKey: _createDepartmentKey,
-          viewEditSearchDepartmentsKey: _viewEditSearchDepartmentsKey,
-          addMembersInDepartmentKey: _addMembersInDepartmentKey,
-        );
-      } else if (widget is ManageTasks) {
-        _selectedWidget = ManageTasks(
-          createTasksKey: _createTasksKey,
-          viewEditSearchTasksKey: _viewEditSearchTasksKey,
-          assignTasksToMembersKey: _assignTasksToMembersKey,
-          evaluateTasksKey: _evaluateTasksKey,
-        );
-      } else if (widget is ManageMember) {
-        _selectedWidget = ManageMember(
-          manageUserRegistrations: manageUserRegistrations,
-        );
-      } else {
-        _selectedWidget = widget;
-      }
+      _selectedWidget = widget;
     });
 
-    // Schedule the scrolling after the widget update
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget is ManageDepartment) {
         switch (index) {
@@ -81,6 +63,9 @@ class _AdminPanelState extends State<AdminPanel> {
             break;
           case 3:
             _scrollToSection(_addMembersInDepartmentKey);
+            break;
+          case 4:
+            _scrollToSection(membersAndDepartmentKey);
             break;
         }
       } else if (widget is ManageTasks) {
@@ -94,13 +79,13 @@ class _AdminPanelState extends State<AdminPanel> {
           case 8:
             _scrollToSection(_assignTasksToMembersKey);
             break;
-          case 9:
+          case 10:
             _scrollToSection(_evaluateTasksKey);
             break;
         }
       } else if (widget is ManageMember) {
         switch (index) {
-          case 4:
+          case 5:
             _scrollToSection(manageUserRegistrations);
             break;
         }
@@ -154,43 +139,7 @@ class _AdminPanelState extends State<AdminPanel> {
         children: [
           DrawerWidget(
             selectedIndex: _selectedIndex,
-            onItemTapped: (index, widget) {
-              _onItemTapped(index, widget);
-              if (widget is ManageDepartment) {
-                switch (index) {
-                  case 1:
-                    _scrollToSection(_createDepartmentKey);
-                    break;
-                  case 2:
-                    _scrollToSection(_viewEditSearchDepartmentsKey);
-                    break;
-                  case 3:
-                    _scrollToSection(_addMembersInDepartmentKey);
-                    break;
-                }
-              } else if (widget is ManageTasks) {
-                switch (index) {
-                  case 6:
-                    _scrollToSection(_createTasksKey);
-                    break;
-                  case 7:
-                    _scrollToSection(_viewEditSearchTasksKey);
-                    break;
-                  case 8:
-                    _scrollToSection(_assignTasksToMembersKey);
-                    break;
-                  case 9:
-                    _scrollToSection(_evaluateTasksKey);
-                    break;
-                }
-              } else if (widget is ManageMember) {
-                switch (index) {
-                  case 4:
-                    _scrollToSection(manageUserRegistrations);
-                    break;
-                }
-              }
-            },
+            onItemTapped: _onItemTapped,
             createDepartmentKey: _createDepartmentKey,
             viewEditSearchDepartmentsKey: _viewEditSearchDepartmentsKey,
             addMembersInDepartmentKey: _addMembersInDepartmentKey,
@@ -199,6 +148,7 @@ class _AdminPanelState extends State<AdminPanel> {
             assignTasksToMembersKey: _assignTasksToMembersKey,
             evaluateTasksKey: _evaluateTasksKey,
             manageUserRegistrations: manageUserRegistrations,
+            membersAndDepartmentKey: membersAndDepartmentKey,
           ),
           Expanded(
             child: Padding(

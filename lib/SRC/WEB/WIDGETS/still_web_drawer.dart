@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/WIDGETS/4_members_and_department_Widget.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/manage_department.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/MEMBER/manage_member.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/REPORT/manage_reports.dart';
@@ -22,6 +21,7 @@ class DrawerWidget extends StatelessWidget {
   final GlobalKey assignTasksToMembersKey;
   final GlobalKey evaluateTasksKey;
   final GlobalKey manageUserRegistrations;
+  final GlobalKey membersAndDepartmentKey;
 
   const DrawerWidget({
     super.key,
@@ -35,6 +35,7 @@ class DrawerWidget extends StatelessWidget {
     required this.assignTasksToMembersKey,
     required this.evaluateTasksKey,
     required this.manageUserRegistrations,
+    required this.membersAndDepartmentKey,
   });
 
   @override
@@ -64,16 +65,16 @@ class DrawerWidget extends StatelessWidget {
               icon: Icons.dashboard,
               index: 0,
               widget: Overview(
-                onItemTapped: onItemTapped,
-                createDepartmentKey: createDepartmentKey,
-                viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
-                addMembersInDepartmentKey: addMembersInDepartmentKey,
-                createTasksKey: createTasksKey,
-                viewEditSearchTasksKey: viewEditSearchTasksKey,
-                assignTasksToMembersKey: assignTasksToMembersKey,
-                evaluateTasksKey: evaluateTasksKey,
-                manageUserRegistrations: manageUserRegistrations,
-              ),
+                  onItemTapped: onItemTapped,
+                  createDepartmentKey: createDepartmentKey,
+                  viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
+                  addMembersInDepartmentKey: addMembersInDepartmentKey,
+                  createTasksKey: createTasksKey,
+                  viewEditSearchTasksKey: viewEditSearchTasksKey,
+                  assignTasksToMembersKey: assignTasksToMembersKey,
+                  evaluateTasksKey: evaluateTasksKey,
+                  manageUserRegistrations: manageUserRegistrations,
+                  membersAndDepartmentKey: membersAndDepartmentKey),
             ),
             buildExpansionTile(
               context,
@@ -87,10 +88,11 @@ class DrawerWidget extends StatelessWidget {
                   icon: Icons.add,
                   index: 1,
                   widget: ManageDepartment(
-                    createDepartmentKey: createDepartmentKey,
-                    viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
-                    addMembersInDepartmentKey: addMembersInDepartmentKey,
-                  ),
+                      createDepartmentKey: createDepartmentKey,
+                      viewEditSearchDepartmentsKey:
+                          viewEditSearchDepartmentsKey,
+                      addMembersInDepartmentKey: addMembersInDepartmentKey,
+                      membersAndDepartmentKey: membersAndDepartmentKey),
                 ),
                 buildChildTile(
                   context,
@@ -98,10 +100,11 @@ class DrawerWidget extends StatelessWidget {
                   icon: Icons.remove_red_eye,
                   index: 2,
                   widget: ManageDepartment(
-                    createDepartmentKey: createDepartmentKey,
-                    viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
-                    addMembersInDepartmentKey: addMembersInDepartmentKey,
-                  ),
+                      createDepartmentKey: createDepartmentKey,
+                      viewEditSearchDepartmentsKey:
+                          viewEditSearchDepartmentsKey,
+                      addMembersInDepartmentKey: addMembersInDepartmentKey,
+                      membersAndDepartmentKey: membersAndDepartmentKey),
                 ),
                 buildChildTile(
                   context,
@@ -109,17 +112,23 @@ class DrawerWidget extends StatelessWidget {
                   icon: Icons.add_box_outlined,
                   index: 3,
                   widget: ManageDepartment(
-                    createDepartmentKey: createDepartmentKey,
-                    viewEditSearchDepartmentsKey: viewEditSearchDepartmentsKey,
-                    addMembersInDepartmentKey: addMembersInDepartmentKey,
-                  ),
+                      createDepartmentKey: createDepartmentKey,
+                      viewEditSearchDepartmentsKey:
+                          viewEditSearchDepartmentsKey,
+                      addMembersInDepartmentKey: addMembersInDepartmentKey,
+                      membersAndDepartmentKey: membersAndDepartmentKey),
                 ),
                 buildChildTile(
                   context,
                   title: 'Departments and Members',
                   icon: Icons.remove_red_eye,
                   index: 4,
-                  widget: MembersAndDepartmentsWidget()
+                  widget: ManageDepartment(
+                      createDepartmentKey: createDepartmentKey,
+                      viewEditSearchDepartmentsKey:
+                          viewEditSearchDepartmentsKey,
+                      addMembersInDepartmentKey: addMembersInDepartmentKey,
+                      membersAndDepartmentKey: membersAndDepartmentKey),
                 ),
               ],
             ),
@@ -127,7 +136,7 @@ class DrawerWidget extends StatelessWidget {
               context,
               title: 'Manage Members',
               icon: Icons.person,
-              indices: [5, 6], // Update indices
+              indices: [5],
               children: [
                 buildChildTile(
                   context,
@@ -138,28 +147,19 @@ class DrawerWidget extends StatelessWidget {
                     manageUserRegistrations: manageUserRegistrations,
                   ),
                 ),
-                buildChildTile(
-                  context,
-                  title: 'View Assigned Tasks to Members',
-                  icon: Icons.remove_red_eye,
-                  index: 6,
-                  widget: ManageMember(
-                    manageUserRegistrations: manageUserRegistrations,
-                  ),
-                ),
               ],
             ),
             buildExpansionTile(
               context,
               title: 'Manage Tasks',
               icon: Icons.task,
-              indices: [7, 8, 9, 10],
+              indices: [6, 7, 8, 9, 10],
               children: [
                 buildChildTile(
                   context,
                   title: 'Create Tasks',
                   icon: Icons.add,
-                  index: 7,
+                  index: 6,
                   widget: ManageTasks(
                     createTasksKey: createTasksKey,
                     viewEditSearchTasksKey: viewEditSearchTasksKey,
@@ -171,7 +171,7 @@ class DrawerWidget extends StatelessWidget {
                   context,
                   title: 'View Tasks',
                   icon: Icons.remove_red_eye,
-                  index: 8,
+                  index: 7,
                   widget: ManageTasks(
                     createTasksKey: createTasksKey,
                     viewEditSearchTasksKey: viewEditSearchTasksKey,
@@ -183,11 +183,23 @@ class DrawerWidget extends StatelessWidget {
                   context,
                   title: 'Assign Tasks to Members',
                   icon: Icons.add_box_outlined,
-                  index: 9,
-                  widget: AssignTasksToMembersWidget(
-                    key: assignTasksToMembersKey,
+                  index: 8,
+                  widget: ManageTasks(
+                    createTasksKey: createTasksKey,
+                    viewEditSearchTasksKey: viewEditSearchTasksKey,
+                    assignTasksToMembersKey: assignTasksToMembersKey,
+                    evaluateTasksKey: evaluateTasksKey,
                   ),
                 ),
+                // buildChildTile(
+                //   context,
+                //   title: 'View Assigned Tasks to Members',
+                //   icon: Icons.add_box_outlined,
+                //   index: 9,
+                //   widget: AssignTasksToMembersWidget(
+                //     key: assignTasksToMembersKey,
+                //   ),
+                // ),
                 buildChildTile(
                   context,
                   title: 'Evaluate Tasks',
@@ -223,12 +235,12 @@ class DrawerWidget extends StatelessWidget {
   }
 
   Widget buildTile(
-      BuildContext context, {
-        required String title,
-        required IconData icon,
-        required int index,
-        required Widget widget,
-      }) {
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required int index,
+    required Widget widget,
+  }) {
     return ListTile(
       title: Text(
         title,
@@ -236,19 +248,20 @@ class DrawerWidget extends StatelessWidget {
           color: selectedIndex == index ? customAqua : Colors.grey,
         ),
       ),
-      leading: Icon(icon, color: selectedIndex == index ? customAqua : Colors.grey),
+      leading:
+          Icon(icon, color: selectedIndex == index ? customAqua : Colors.grey),
       selected: selectedIndex == index,
       onTap: () => onItemTapped(index, widget),
     );
   }
 
   Widget buildChildTile(
-      BuildContext context, {
-        required String title,
-        required IconData icon,
-        required int index,
-        required Widget widget,
-      }) {
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required int index,
+    required Widget widget,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(left: 40.0, right: 8.0),
       child: ListTile(
@@ -270,12 +283,12 @@ class DrawerWidget extends StatelessWidget {
   }
 
   Widget buildExpansionTile(
-      BuildContext context, {
-        required String title,
-        required IconData icon,
-        required List<int> indices,
-        required List<Widget> children,
-      }) {
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required List<int> indices,
+    required List<Widget> children,
+  }) {
     bool isSelected = indices.contains(selectedIndex);
     return ExpansionTile(
       title: Text(

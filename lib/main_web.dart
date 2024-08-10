@@ -35,7 +35,7 @@ class _WebHomePageState extends State<WebHomePage> {
         } else {
           return const WelcomeScreen();
         }
-      },
+      }
     );
   }
 }

@@ -16,6 +16,7 @@ class Overview extends StatefulWidget {
   final GlobalKey assignTasksToMembersKey;
   final GlobalKey evaluateTasksKey;
   final GlobalKey manageUserRegistrations;
+  final GlobalKey membersAndDepartmentKey;
 
   const Overview({
     super.key,
@@ -28,6 +29,7 @@ class Overview extends StatefulWidget {
     required this.assignTasksToMembersKey,
     required this.evaluateTasksKey,
     required this.manageUserRegistrations,
+    required this.membersAndDepartmentKey,
   });
 
   @override
@@ -39,10 +41,10 @@ class _OverviewState extends State<Overview> {
     widget.onItemTapped(
       1,
       ManageDepartment(
-        createDepartmentKey: widget.createDepartmentKey,
-        viewEditSearchDepartmentsKey: widget.viewEditSearchDepartmentsKey,
-        addMembersInDepartmentKey: widget.addMembersInDepartmentKey,
-      ),
+          createDepartmentKey: widget.createDepartmentKey,
+          viewEditSearchDepartmentsKey: widget.viewEditSearchDepartmentsKey,
+          addMembersInDepartmentKey: widget.addMembersInDepartmentKey,
+          membersAndDepartmentKey: widget.membersAndDepartmentKey),
     );
   }
 
@@ -60,7 +62,7 @@ class _OverviewState extends State<Overview> {
 
   void _handleMembersNavigation() {
     widget.onItemTapped(
-      4,
+      5,
       ManageMember(
         manageUserRegistrations: widget.manageUserRegistrations,
       ),
@@ -109,7 +111,7 @@ class _OverviewState extends State<Overview> {
                   title: 'View Reports',
                   buttonText: 'Go to Reports',
                   onPressed: () {
-                    widget.onItemTapped(4, const ManageReports());
+                    widget.onItemTapped(11, const ManageReports());
                   },
                 ),
               ),
@@ -122,7 +124,7 @@ class _OverviewState extends State<Overview> {
             title: 'View Other Actions',
             buttonText: 'Go to Settings',
             onPressed: () {
-              widget.onItemTapped(5, const Settings());
+              widget.onItemTapped(12, const Settings());
             },
           ),
         ),
