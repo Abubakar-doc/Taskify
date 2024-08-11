@@ -478,7 +478,7 @@ class _AssignTasksToMembersWidgetState
                           });
                           try {
                             await _taskService.assignTaskToMember(member.uid,
-                                selectedTask!.id!, deadline, member.name);
+                                selectedTask!.id, deadline, member.name);
                             Navigator.of(context).pop();
                             Utils().SuccessSnackBar(
                               context,
