@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "129387226201",
+    "firebase_url": "https://taskify-a182c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "taskify-a182c",
+    "storage_bucket": "taskify-a182c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:129387226201:android:503af7157bd818233bfd48",
+        "android_client_info": {
+          "package_name": "com.example.taskify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgjEVxxgrqU8FCZgQmV-GBBPHnxBTx3ic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
