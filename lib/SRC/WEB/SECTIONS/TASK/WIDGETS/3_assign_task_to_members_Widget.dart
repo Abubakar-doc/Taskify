@@ -160,7 +160,7 @@ class _AssignTasksToMembersWidgetState
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: customLightGrey,
-                  hintText: 'Search Task',
+                  hintText: 'Search Unassigned Task',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                     borderSide: BorderSide.none,

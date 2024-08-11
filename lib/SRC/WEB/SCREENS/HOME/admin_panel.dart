@@ -28,6 +28,7 @@ class _AdminPanelState extends State<AdminPanel> {
   final GlobalKey _evaluateTasksKey = GlobalKey();
   final GlobalKey manageUserRegistrations = GlobalKey();
   final GlobalKey membersAndDepartmentKey = GlobalKey();
+  final GlobalKey assignedTasksKey = GlobalKey();
 
   @override
   void initState() {
@@ -43,6 +44,7 @@ class _AdminPanelState extends State<AdminPanel> {
       evaluateTasksKey: _evaluateTasksKey,
       manageUserRegistrations: manageUserRegistrations,
       membersAndDepartmentKey: membersAndDepartmentKey,
+      assignedTasksKey: assignedTasksKey,
     );
   }
 
@@ -78,6 +80,9 @@ class _AdminPanelState extends State<AdminPanel> {
             break;
           case 8:
             _scrollToSection(_assignTasksToMembersKey);
+            break;
+          case 9:
+            _scrollToSection(assignedTasksKey);
             break;
           case 10:
             _scrollToSection(_evaluateTasksKey);
@@ -149,6 +154,7 @@ class _AdminPanelState extends State<AdminPanel> {
             evaluateTasksKey: _evaluateTasksKey,
             manageUserRegistrations: manageUserRegistrations,
             membersAndDepartmentKey: membersAndDepartmentKey,
+            assignedTasksKey: assignedTasksKey,
           ),
           Expanded(
             child: Padding(

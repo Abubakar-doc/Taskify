@@ -3,7 +3,6 @@ import 'package:taskify/SRC/WEB/SECTIONS/DEPARTMENT/manage_department.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/MEMBER/manage_member.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/REPORT/manage_reports.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/SETTINGS/manage_settings.dart';
-import 'package:taskify/SRC/WEB/SECTIONS/TASK/WIDGETS/3_assign_task_to_members_Widget.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/TASK/manage_tasks.dart';
 import 'package:taskify/SRC/WEB/SECTIONS/OVERVIEW/overview.dart';
 import 'package:taskify/THEME/theme.dart';
@@ -22,6 +21,7 @@ class DrawerWidget extends StatelessWidget {
   final GlobalKey evaluateTasksKey;
   final GlobalKey manageUserRegistrations;
   final GlobalKey membersAndDepartmentKey;
+  final GlobalKey assignedTasksKey;
 
   const DrawerWidget({
     super.key,
@@ -36,6 +36,7 @@ class DrawerWidget extends StatelessWidget {
     required this.evaluateTasksKey,
     required this.manageUserRegistrations,
     required this.membersAndDepartmentKey,
+    required this.assignedTasksKey,
   });
 
   @override
@@ -74,7 +75,8 @@ class DrawerWidget extends StatelessWidget {
                   assignTasksToMembersKey: assignTasksToMembersKey,
                   evaluateTasksKey: evaluateTasksKey,
                   manageUserRegistrations: manageUserRegistrations,
-                  membersAndDepartmentKey: membersAndDepartmentKey),
+                  membersAndDepartmentKey: membersAndDepartmentKey,
+                  assignedTasksKey: assignedTasksKey,),
             ),
             buildExpansionTile(
               context,
@@ -165,6 +167,7 @@ class DrawerWidget extends StatelessWidget {
                     viewEditSearchTasksKey: viewEditSearchTasksKey,
                     assignTasksToMembersKey: assignTasksToMembersKey,
                     evaluateTasksKey: evaluateTasksKey,
+                    assignedTasksKey: assignedTasksKey,
                   ),
                 ),
                 buildChildTile(
@@ -177,6 +180,7 @@ class DrawerWidget extends StatelessWidget {
                     viewEditSearchTasksKey: viewEditSearchTasksKey,
                     assignTasksToMembersKey: assignTasksToMembersKey,
                     evaluateTasksKey: evaluateTasksKey,
+                    assignedTasksKey: assignedTasksKey,
                   ),
                 ),
                 buildChildTile(
@@ -189,17 +193,22 @@ class DrawerWidget extends StatelessWidget {
                     viewEditSearchTasksKey: viewEditSearchTasksKey,
                     assignTasksToMembersKey: assignTasksToMembersKey,
                     evaluateTasksKey: evaluateTasksKey,
+                    assignedTasksKey: assignedTasksKey,
                   ),
                 ),
-                // buildChildTile(
-                //   context,
-                //   title: 'View Assigned Tasks to Members',
-                //   icon: Icons.add_box_outlined,
-                //   index: 9,
-                //   widget: AssignTasksToMembersWidget(
-                //     key: assignTasksToMembersKey,
-                //   ),
-                // ),
+                buildChildTile(
+                  context,
+                  title: 'View Assigned Tasks',
+                  icon: Icons.remove_red_eye,
+                  index: 9,
+                  widget: ManageTasks(
+                    createTasksKey: createTasksKey,
+                    viewEditSearchTasksKey: viewEditSearchTasksKey,
+                    assignTasksToMembersKey: assignTasksToMembersKey,
+                    evaluateTasksKey: evaluateTasksKey,
+                    assignedTasksKey: assignedTasksKey,
+                  ),
+                ),
                 buildChildTile(
                   context,
                   title: 'Evaluate Tasks',
@@ -210,6 +219,7 @@ class DrawerWidget extends StatelessWidget {
                     viewEditSearchTasksKey: viewEditSearchTasksKey,
                     assignTasksToMembersKey: assignTasksToMembersKey,
                     evaluateTasksKey: evaluateTasksKey,
+                    assignedTasksKey: assignedTasksKey,
                   ),
                 ),
               ],

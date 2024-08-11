@@ -16,6 +16,7 @@ class Overview extends StatefulWidget {
   final GlobalKey assignTasksToMembersKey;
   final GlobalKey evaluateTasksKey;
   final GlobalKey manageUserRegistrations;
+  final GlobalKey assignedTasksKey;
   final GlobalKey membersAndDepartmentKey;
 
   const Overview({
@@ -30,6 +31,7 @@ class Overview extends StatefulWidget {
     required this.evaluateTasksKey,
     required this.manageUserRegistrations,
     required this.membersAndDepartmentKey,
+    required this.assignedTasksKey,
   });
 
   @override
@@ -56,6 +58,7 @@ class _OverviewState extends State<Overview> {
         viewEditSearchTasksKey: widget.viewEditSearchTasksKey,
         assignTasksToMembersKey: widget.assignTasksToMembersKey,
         evaluateTasksKey: widget.evaluateTasksKey,
+        assignedTasksKey: widget.assignedTasksKey,
       ),
     );
   }

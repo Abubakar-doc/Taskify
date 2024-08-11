@@ -373,9 +373,9 @@ class _AddMembersInDepartmentWidgetState
                         context,
                         'The member "${member.name}" has been successfully added to the department "${department.name}".',
                       );
-                      // Clear the form after successful addition
                       handleCancel();
                     } catch (error) {
+                      Navigator.of(context).pop();
                       Utils().ErrorSnackBar(
                         context,
                         'Failed to add the member "${member.name}" to the department "${department.name}". Please try again.',
