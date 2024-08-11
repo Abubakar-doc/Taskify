@@ -34,7 +34,7 @@ class TaskifyApp extends StatelessWidget {
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
             home: foundation.kIsWeb
-                ? const WebHomePage()
+                ?  WebHomePage()
                 : const MobileHomePage(),
           );
         },
