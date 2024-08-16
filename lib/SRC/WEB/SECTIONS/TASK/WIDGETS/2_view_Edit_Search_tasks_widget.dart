@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/COMMON/SERVICES/task.dart';
 import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
-import 'package:taskify/SRC/WEB/SERVICES/task.dart';
+import 'package:taskify/SRC/COMMON/MODEL/task.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/small_widgets.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/task_table_list_item.dart';
 import 'package:taskify/THEME/theme.dart';
-import 'package:taskify/SRC/WEB/MODEL/task.dart';
 
 class ViewEditSearchTasksWidget extends StatefulWidget {
   const ViewEditSearchTasksWidget({super.key});

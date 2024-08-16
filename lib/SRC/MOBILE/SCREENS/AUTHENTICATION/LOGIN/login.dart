@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/MOBILE/SERVICES/authentication.dart';
 import 'package:taskify/THEME/theme.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,6 +14,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _passwordVisible = false;
+  bool _isLoading = false;
+  final AuthService _authService = AuthService();
 
   @override
   void dispose() {
@@ -20,6 +23,24 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
+
+  void _signIn() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isLoading = true;
+      });
+      try{
+        String email = _emailController.text.trim();
+        String password = _passwordController.text.trim();
+        await _authService.signIn(context, email, password);
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -123,12 +144,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          // Process login
-                        }
-                      },
-                      child: const Text(
+                      onPressed: _isLoading ? null : _signIn,
+
+                      child: _isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
                         'Login',
                         style: TextStyle(
                           color: customDarkGrey,

@@ -1,5 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/COMMON/MODEL/Member.dart';
+import 'package:taskify/SRC/COMMON/SERVICES/member.dart';
+import 'package:taskify/SRC/COMMON/SERVICES/task.dart';
 import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
+import 'package:taskify/SRC/WEB/WIDGETS/small_widgets.dart';
 import 'package:taskify/THEME/theme.dart';
 
 class EvaluateTasksWidget extends StatefulWidget {
@@ -10,26 +15,66 @@ class EvaluateTasksWidget extends StatefulWidget {
 }
 
 class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
-  List<Map<String, String>> tasks = [
-    {'taskName': 'Task 1', 'memberName': 'John', 'deadline': '2023-12-01', 'response': 'I have completed the task'},
-    {'taskName': 'Task 2', 'memberName': 'Jane', 'deadline': '2023-12-05', 'response': 'I have completed the task'},
-    {'taskName': 'Task 3', 'memberName': 'Mike', 'deadline': '2023-12-10', 'response': 'I have completed the task'},
-    {'taskName': 'Task 4', 'memberName': 'Alice', 'deadline': '2023-12-15', 'response': 'I have completed the task'},
-    {'taskName': 'Task 5', 'memberName': 'Bob', 'deadline': '2023-12-20', 'response': 'I have completed the task'},
-    {'taskName': 'Task 6', 'memberName': 'Asad', 'deadline': '2023-12-10', 'response': 'I have completed the task'},
-    {'taskName': 'Task 7', 'memberName': 'Khabib', 'deadline': '2023-12-12', 'response': 'I have completed the task'},
-    // Add more tasks as needed
-  ];
-  List<Map<String, String>> filteredTasks = [];
+  List<Map<String, dynamic>> filteredTasks = [];
   bool showAllTasks = false;
-
   TextEditingController searchController = TextEditingController();
-  TextEditingController messageController = TextEditingController(); // New controller
+  TextEditingController messageController = TextEditingController();
+  List<Map<String, dynamic>> tasks = [];
+  bool isLoadingMembers = true;
+  bool isLoadingTasks = true;
+  List<UserModel> memberList = [];
+  final MemberService _memberService = MemberService();
+  final TaskService _taskService = TaskService();
+  Map<String, String> taskNamesMap = {};
+  late StreamSubscription<Map<String, Map<String, dynamic>>> _tasksSubscription;
 
   @override
   void initState() {
     super.initState();
-    filteredTasks.addAll(tasks);
+
+    _tasksSubscription =
+        _taskService.getAllUnderApprovalAssignedTasksWithUserNames().listen(
+      (tasks) async {
+        final taskIds = tasks.keys.toList();
+        _taskService.getTaskNamesByIds(taskIds).listen((taskNames) {
+          setState(() {
+            // Map task IDs to task names and update tasks
+            this.tasks = tasks.entries.map((e) {
+              final taskId = e.key;
+              final taskName = taskNames[taskId] ?? 'N/A';
+              return {
+                'taskId': taskId,
+                'taskDetails': {
+                  'name': taskName,
+                  'deadline': e.value['taskDetails']?['deadline'] ?? 'N/A',
+                  'response': e.value['taskDetails']?['response'] ?? 'N/A',
+                },
+                'userName': e.value['userName'],
+                'userId': e.value['documentId'],
+              };
+            }).toList();
+
+            filteredTasks = this.tasks;
+            isLoadingTasks = false;
+          });
+        }, onError: (error) {
+          print('Error fetching task names: $error');
+        });
+      },
+      onError: (error) {
+        print('Error fetching tasks: $error');
+      },
+    );
+
+    _memberService.getApprovedMembersHavingDepartmentForTask().listen(
+        (members) {
+      setState(() {
+        memberList = members;
+        isLoadingMembers = false;
+      });
+    }, onError: (error) {
+      print('Error fetching members: $error');
+    });
   }
 
   @override
@@ -64,7 +109,7 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
                         borderSide: BorderSide.none,
                       ),
                       contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 12.0),
+                          const EdgeInsets.symmetric(horizontal: 12.0),
                     ),
                     style: const TextStyle(color: Colors.white),
                     onChanged: (value) {
@@ -88,27 +133,39 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
               ),
               child: Column(
                 children: [
-                  _buildTableHeader(), // Table Header with titles
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: showAllTasks
-                        ? filteredTasks.length
-                        : (filteredTasks.length > 5 ? 5 : filteredTasks.length),
-                    itemBuilder: (context, index) {
-                      return TaskTableListItem(
-                        taskName: filteredTasks[index]['taskName']!,
-                        deadline: filteredTasks[index]['deadline']!,
-                        memberName: filteredTasks[index]['memberName']!,
-                        response: filteredTasks[index]['response']!,
-                        onReject: () {
-                          _confirmAction(index, 'Reject');
-                        },
-                        onPass: () {
-                          _confirmAction(index, 'Pass');
-                        },
-                      );
-                    },
-                  ),
+                  _buildTableHeader(),
+                  isLoadingTasks
+                      ? const LoadingPlaceholder()
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: showAllTasks
+                              ? filteredTasks.length
+                              : (filteredTasks.length > 5
+                                  ? 5
+                                  : filteredTasks.length),
+                          itemBuilder: (context, index) {
+                            return TaskTableListItem(
+                              taskId: filteredTasks[index]
+                                  ['taskId'], // Pass taskId
+                              taskName: filteredTasks[index]['taskDetails']
+                                      ?['name'] ??
+                                  'N/A',
+                              deadline: filteredTasks[index]['taskDetails']
+                                      ?['deadline'] ??
+                                  'N/A',
+                              memberName:
+                                  filteredTasks[index]['userName'] ?? 'N/A',
+                              response: filteredTasks[index]['taskDetails']
+                                      ?['response'] ??
+                                  'N/A',
+                              onReject: () {
+                                _confirmAction(index, 'Reject');
+                              },
+                              onPass: () {
+                                _confirmAction(index, 'Pass');
+                              },
+                            );
+                          }),
                   if (filteredTasks.length > 5 && !showAllTasks)
                     TextButton(
                       onPressed: () {
@@ -211,101 +268,153 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
     query = query.toLowerCase();
     setState(() {
       filteredTasks = tasks.where((task) {
-        return task['taskName']!.toLowerCase().contains(query) || task['memberName']!.toLowerCase().contains(query) || task['deadline']!.toLowerCase().contains(query) || task['response']!.toLowerCase().contains(query);
+        final taskName = task['taskDetails']?['name'] ?? '';
+        final userName = task['userName'] ?? '';
+        final deadline = task['taskDetails']?['deadline'] ?? '';
+        final response = task['taskDetails']?['response'] ?? '';
+        return taskName.toLowerCase().contains(query) ||
+            userName.toLowerCase().contains(query) ||
+            deadline.toLowerCase().contains(query) ||
+            response.toLowerCase().contains(query);
       }).toList();
-      // Reset showAllTasks when filtering
       showAllTasks = false;
     });
   }
 
   void _confirmAction(int index, String action) {
-    // Create a TextEditingController for the message TextField
+    final taskId = filteredTasks[index]['taskId'];
+    final memberId = filteredTasks[index]['userId'];
+
     final TextEditingController messageController = TextEditingController();
-    // Create a global key for the form
     final formKey = GlobalKey<FormState>();
+
+    // Variable to track loading state
+    bool isLoading = false;
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('$action Task'),
-          backgroundColor: customLightGrey,
-          content: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Are you sure you want to $action this task?'),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: messageController,
-                  decoration: InputDecoration(
-                    labelText: 'Enter your message (Optional)',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('$action Task'),
+              backgroundColor: customLightGrey,
+              content: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Are you sure you want to $action this task?'),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: messageController,
+                      decoration: InputDecoration(
+                        labelText: 'Enter your message (Optional)',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      // validator: (value) {
+                      //   if (value == null || value.trim().isEmpty) {
+                      //     return 'Message cannot be empty';
+                      //   }
+                      //   return null;
+                      // },
                     ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          Navigator.of(context).pop();
+                        },
+                  child: const Text(
+                    'Cancel',
+                    style:
+                        TextStyle(color: customAqua), // Match your theme color
                   ),
-                  // validator: (value) {
-                  //   if (value == null || value.trim().isEmpty) {
-                  //     return 'Message cannot be empty';
-                  //   }
-                  //   return null;
-                  // },
+                ),
+                ElevatedButton(
+                  onPressed: isLoading
+                      ? null
+                      : () async {
+                          if (formKey.currentState?.validate() ?? false) {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            try {
+                              if (action == 'Pass') {
+                                await _taskService.passTask(memberId, taskId);
+                                Utils().SuccessSnackBar(context,
+                                    "Task marked as completed successfully!");
+                              } else if (action == 'Reject') {
+                                await _taskService.rejectTask(memberId, taskId);
+                                Utils().InfoSnackBar(context, "Task rejected!");
+                              }
+
+                              // Update UI after action
+                              setState(() {
+                                filteredTasks.removeAt(index);
+                              });
+                            } catch (error) {
+                              print('Error updating task status: $error');
+                              Utils().ErrorSnackBar(
+                                  context, "Failed to update task status.");
+                            } finally {
+                              setState(() {
+                                isLoading = false;
+                              });
+                              Navigator.of(context).pop();
+                            }
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        action == 'Reject' ? Colors.red.shade400 : customAqua,
+                  ),
+                  child: isLoading
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                            strokeWidth: 2.0,
+                          ),
+                        )
+                      : Text(
+                          action,
+                          style: TextStyle(
+                            color: action == 'Reject'
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                        ),
                 ),
               ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: customAqua), // Match your theme color
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (formKey.currentState?.validate() ?? false) {
-                  setState(() {
-                    filteredTasks.removeAt(index);
-                    if (action == 'Pass') {
-                      Utils().SuccessSnackBar(context,"Task marked as completed successfully!");
-                    } else {
-                      Utils().InfoSnackBar(context,"Task rejected!");
-                    }
-                  });
-                  Navigator.of(context).pop();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: action == 'Reject' ? Colors.red.shade400 : customAqua,
-              ),
-              child: Text(
-                action,
-                style: TextStyle(
-                  color: action == 'Reject' ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
-          ],
+            );
+          },
         );
       },
     );
   }
-
 }
 
 class TaskTableListItem extends StatelessWidget {
+  final String taskId; // Add taskId
   final String taskName;
   final String deadline;
   final String memberName;
   final String response;
-  final VoidCallback onReject;
-  final VoidCallback onPass;
+  final void Function() onReject;
+  final void Function() onPass;
 
-  const TaskTableListItem({super.key, 
+  const TaskTableListItem({
+    super.key,
+    required this.taskId, // Add taskId
     required this.taskName,
     required this.deadline,
     required this.memberName,

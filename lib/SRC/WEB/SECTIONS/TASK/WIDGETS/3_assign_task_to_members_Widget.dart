@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/SRC/COMMON/MODEL/Member.dart';
 import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
-import 'package:taskify/SRC/WEB/SERVICES/member.dart';
+import 'package:taskify/SRC/COMMON/SERVICES/member.dart';
 import 'package:taskify/THEME/theme.dart';
 import 'package:drop_down_search_field/drop_down_search_field.dart';
-import 'package:taskify/SRC/WEB/SERVICES/task.dart';
-import 'package:taskify/SRC/WEB/MODEL/task.dart';
+import 'package:taskify/SRC/COMMON/SERVICES/task.dart';
+import 'package:taskify/SRC/COMMON/MODEL/task.dart';
 
 class AssignTasksToMembersWidget extends StatefulWidget {
   const AssignTasksToMembersWidget({super.key});

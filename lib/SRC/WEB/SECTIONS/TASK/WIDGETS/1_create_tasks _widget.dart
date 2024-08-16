@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:taskify/SRC/COMMON/SERVICES/task.dart';
 import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
-import 'package:taskify/SRC/WEB/MODEL/task.dart';
-import 'package:taskify/SRC/WEB/SERVICES/task.dart';
+import 'package:taskify/SRC/COMMON/MODEL/task.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/hoverable_stretched_aqua_button.dart';
 import 'package:taskify/THEME/theme.dart';
 

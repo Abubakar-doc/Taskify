@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
-import 'package:taskify/SRC/COMMON/MODEL/member.dart';
-import 'package:taskify/SRC/MOBILE/SCREENS/AUTHENTICATION/REGISTER/wait_for_approval.dart';
 import 'package:taskify/SRC/MOBILE/SERVICES/authentication.dart';
 import 'package:taskify/THEME/theme.dart';
+
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -31,7 +28,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     super.dispose();
   }
 
-  void _register() async {
+  void _signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() {
         _isLoading = true;
@@ -39,50 +36,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
       AuthService authService = AuthService();
       try {
-        UserModel? user = await authService.registerWithEmailAndPassword(
+        await authService.signUp(
+          context,
           _nameController.text,
           _emailController.text,
           _passwordController.text,
         );
-
+      } finally {
         setState(() {
           _isLoading = false;
         });
-
-        if (user != null) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const WaitForApprovalScreen()),
-          );
-        }
-      } catch (e) {
-        setState(() {
-          _isLoading = false;
-        });
-
-        String errorMessage;
-        if (e is FirebaseAuthException) {
-          switch (e.code) {
-            case 'email-already-in-use':
-              errorMessage = 'This email is already in use.';
-              break;
-            case 'invalid-email':
-              errorMessage = 'The email address is not valid.';
-              break;
-            case 'operation-not-allowed':
-              errorMessage = 'Email/password accounts are not enabled.';
-              break;
-            case 'weak-password':
-              errorMessage = 'The password is too weak.';
-              break;
-            default:
-              errorMessage = 'An unknown error occurred.';
-              break;
-          }
-        } else {
-          errorMessage = 'An unknown error occurred.';
-        }
-        Utils().ErrorSnackBar(context, errorMessage);
       }
     }
   }
@@ -245,7 +208,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: _isLoading ? null : _register,
+                      onPressed: _isLoading ? null : _signUp,
                       child: _isLoading
                           ? const CircularProgressIndicator(color: Colors.white)
                           : const Text(

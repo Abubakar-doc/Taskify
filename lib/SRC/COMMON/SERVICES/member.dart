@@ -153,4 +153,26 @@ class MemberService {
     }
   }
 
+  Future<UserModel?> getUserByEmail(String email) async {
+    try {
+      // Fetch the document based on the email field
+      final querySnapshot = await _usersCollection.where('email', isEqualTo: email).limit(1).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final doc = querySnapshot.docs.first;
+        if (doc.exists) {
+          // Convert the document data to UserModel
+          final user = UserModel.fromMap(doc.data() as Map<String, dynamic>);
+          return user;
+        }
+      }
+      return null; // Return null if no user is found
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
+
 }

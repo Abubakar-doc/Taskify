@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:taskify/SRC/COMMON/MODEL/Member.dart';
 import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
-import 'package:taskify/SRC/WEB/SERVICES/member.dart';
-import 'package:taskify/SRC/WEB/SERVICES/task.dart';
+import 'package:taskify/SRC/COMMON/SERVICES/member.dart';
+import 'package:taskify/SRC/COMMON/SERVICES/task.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/small_widgets.dart';
 import 'package:taskify/THEME/theme.dart';
 
@@ -29,7 +29,6 @@ class _AssignedTasksWidgetState extends State<AssignedTasksWidget> {
   final MemberService _memberService = MemberService();
   final TaskService _taskService = TaskService();
   Map<String, String> taskNamesMap = {};
-
   late StreamSubscription<Map<String, Map<String, dynamic>>> _tasksSubscription;
 
   @override
@@ -134,7 +133,7 @@ class _AssignedTasksWidgetState extends State<AssignedTasksWidget> {
               ),
               child: Column(
                 children: [
-                  _buildTableHeader(), // Table Header with titles
+                  _buildTableHeader(),
                   isLoadingTasks
                       ? const LoadingPlaceholder()
                       : ListView.builder(
@@ -434,7 +433,7 @@ class _AssignedTasksWidgetState extends State<AssignedTasksWidget> {
 
             return AlertDialog(
               backgroundColor: customLightGrey,
-              title: Text('Adjust $taskName Deadline'),
+              title: Text('Adjust "$taskName" Deadline'),
               content: Form(
                 key: formKey,
                 child: TextFormField(
