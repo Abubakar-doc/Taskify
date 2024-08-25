@@ -11,7 +11,8 @@ class ViewEditSearchTasksWidget extends StatefulWidget {
   const ViewEditSearchTasksWidget({super.key});
 
   @override
-  _ViewEditSearchTasksWidgetState createState() => _ViewEditSearchTasksWidgetState();
+  _ViewEditSearchTasksWidgetState createState() =>
+      _ViewEditSearchTasksWidgetState();
 }
 
 class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
@@ -32,7 +33,7 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
   }
 
   void _loadTasks() {
-    _taskService.getTasksStream().listen((tasksList) {
+    _taskService.getFilteredTasksStream().listen((tasksList) {
       setState(() {
         tasks = tasksList;
         filteredTasks = List.from(tasks);
@@ -83,7 +84,8 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
                         borderRadius: BorderRadius.circular(8.0),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 12.0),
                     ),
                     style: const TextStyle(color: Colors.white),
                   ),
@@ -112,7 +114,9 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
                       shrinkWrap: true,
                       itemCount: showAllTasks
                           ? filteredTasks.length
-                          : (filteredTasks.length > 5 ? 5 : filteredTasks.length),
+                          : (filteredTasks.length > 5
+                              ? 5
+                              : filteredTasks.length),
                       itemBuilder: (context, index) {
                         return TaskListItem(
                           name: filteredTasks[index].title,
@@ -205,8 +209,10 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
   }
 
   void _editTask(Task task) {
-    TextEditingController nameController = TextEditingController(text: task.title);
-    TextEditingController descriptionController = TextEditingController(text: task.description ?? '');
+    TextEditingController nameController =
+        TextEditingController(text: task.title);
+    TextEditingController descriptionController =
+        TextEditingController(text: task.description ?? '');
     bool isNameEmpty = false;
     bool isLoading = false;
 
@@ -226,7 +232,8 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
                     decoration: InputDecoration(
                       labelText: 'New Task Name',
                       border: const OutlineInputBorder(),
-                      errorText: isNameEmpty ? 'Task name cannot be empty' : null,
+                      errorText:
+                          isNameEmpty ? 'Task name cannot be empty' : null,
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -249,8 +256,8 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
                   onPressed: isLoading
                       ? null
                       : () {
-                    Navigator.of(context).pop();
-                  },
+                          Navigator.of(context).pop();
+                        },
                   child: const Text(
                     'Cancel',
                     style: TextStyle(color: customAqua),
@@ -260,59 +267,61 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
                   onPressed: isLoading
                       ? null
                       : () async {
-                    if (nameController.text.trim().isEmpty) {
-                      setState(() {
-                        isNameEmpty = true;
-                      });
-                    } else {
-                      setState(() {
-                        isLoading = true; // Start loading
-                      });
+                          if (nameController.text.trim().isEmpty) {
+                            setState(() {
+                              isNameEmpty = true;
+                            });
+                          } else {
+                            setState(() {
+                              isLoading = true; // Start loading
+                            });
 
-                      try {
-                        Task updatedTask = Task(
-                          id: task.id,
-                          title: nameController.text,
-                          description: descriptionController.text,
-                          createdAt: task.createdAt ?? Timestamp.now(), // Handle null case
-                          updatedAt: Timestamp.now(), // Update to current time
-                        );
+                            try {
+                              Task updatedTask = Task(
+                                id: task.id,
+                                title: nameController.text,
+                                description: descriptionController.text,
+                                createdAt: task.createdAt ??
+                                    Timestamp.now(), // Handle null case
+                                updatedAt:
+                                    Timestamp.now(), // Update to current time
+                              );
 
-                        await _taskService.updateTask(updatedTask);
+                              await _taskService.updateTask(updatedTask);
 
-                        Utils().SuccessSnackBar(
-                          context,
-                          "Task has been successfully updated!",
-                        );
-                      } catch (e) {
-                        Utils().ErrorSnackBar(
-                          context,
-                          'Failed to update task: $e',
-                        );
-                      } finally {
-                        setState(() {
-                          isLoading = false; // End loading
-                        });
-                        Navigator.of(context).pop();
-                      }
-                    }
-                  },
+                              Utils().SuccessSnackBar(
+                                context,
+                                "Task has been successfully updated!",
+                              );
+                            } catch (e) {
+                              Utils().ErrorSnackBar(
+                                context,
+                                'Failed to update task: $e',
+                              );
+                            } finally {
+                              setState(() {
+                                isLoading = false; // End loading
+                              });
+                              Navigator.of(context).pop();
+                            }
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: customAqua,
                   ),
                   child: isLoading
                       ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
-                  )
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
                       : const Text(
-                    'Save',
-                    style: TextStyle(color: Colors.black),
-                  ),
+                          'Save',
+                          style: TextStyle(color: Colors.black),
+                        ),
                 ),
               ],
             );
@@ -354,20 +363,32 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
                     });
                     try {
                       await _taskService.deleteTask(taskId);
-                      Navigator.of(context).pop();
                       Utils().InfoSnackBar(
                         context,
                         "Task has been successfully deleted!",
                       );
                     } catch (e) {
+                      String errorMessage;
+                      if (e is FirebaseException) {
+                        // Handle Firebase-specific errors
+                        errorMessage = "Failed to delete task: ${e.message}";
+                      } else if (e is Exception) {
+                        // Handle other types of exceptions
+                        errorMessage = e.toString(); // Show the exception message
+                      } else {
+                        // Handle unknown errors
+                        errorMessage = "An unexpected error occurred.";
+                      }
+
                       Utils().ErrorSnackBar(
                         context,
-                        "Failed to delete task. Please try again.",
+                        errorMessage,
                       );
                     } finally {
                       setState(() {
-                        isLoading = false; // End loading
+                        isLoading = false;
                       });
+                      Navigator.of(context).pop();
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -394,5 +415,4 @@ class _ViewEditSearchTasksWidgetState extends State<ViewEditSearchTasksWidget> {
       },
     );
   }
-
 }

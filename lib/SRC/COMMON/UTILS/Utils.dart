@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Utils {
@@ -126,8 +127,6 @@ class Utils {
   void InfoSnackBar(BuildContext context, String message, {Duration duration = const Duration(seconds: 5)}) {
     showCustomSnackBar(context, message, Colors.grey, Colors.grey.shade900, duration: duration);
   }
-
-
 
 
 }

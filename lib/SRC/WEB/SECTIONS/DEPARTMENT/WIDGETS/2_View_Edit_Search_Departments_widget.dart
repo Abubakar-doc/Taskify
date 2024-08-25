@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
 import 'package:taskify/SRC/WEB/MODEL/department.dart';
-import 'package:taskify/SRC/WEB/SERVICES/department.dart';
+import 'package:taskify/SRC/COMMON/SERVICES/department.dart';
 import 'package:taskify/SRC/WEB/WIDGETS/small_widgets.dart';
 import 'package:taskify/THEME/theme.dart';
 

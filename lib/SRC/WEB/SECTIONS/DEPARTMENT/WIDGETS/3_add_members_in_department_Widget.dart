@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/SRC/COMMON/UTILS/Utils.dart';
-import 'package:taskify/SRC/WEB/SERVICES/department.dart';
+import 'package:taskify/SRC/COMMON/SERVICES/department.dart';
 import 'package:taskify/SRC/COMMON/SERVICES/member.dart';
 import 'package:taskify/THEME/theme.dart';
 import 'package:drop_down_search_field/drop_down_search_field.dart';

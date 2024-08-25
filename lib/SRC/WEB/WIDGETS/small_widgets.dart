@@ -20,21 +20,28 @@ class divider extends StatelessWidget {
   }
 }
 
-
 class LoadingPlaceholder extends StatelessWidget {
-  final double height;
-  final Color color;
+  final double? height;
+  final Color? color;
+  final Color? backgroundColor;
+  final BorderRadius? borderRadius;
 
   const LoadingPlaceholder({
     super.key,
-    this.height = 300,
+    this.height,
     this.color = Colors.grey,
+    this.backgroundColor,
+    this.borderRadius,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: height, // Adjustable height
+    return Container(
+      height: height ?? 300, // Default height of 300 if height is null
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: borderRadius,
+      ),
       child: Center(
         child: CircularProgressIndicator(
           color: color,
@@ -43,3 +50,4 @@ class LoadingPlaceholder extends StatelessWidget {
     );
   }
 }
+

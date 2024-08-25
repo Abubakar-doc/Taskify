@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:intl/intl.dart';
 import 'package:taskify/SRC/COMMON/MODEL/Member.dart';
 import 'package:taskify/SRC/COMMON/SERVICES/member.dart';
 import 'package:taskify/SRC/COMMON/SERVICES/task.dart';
@@ -36,18 +39,32 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
         _taskService.getAllUnderApprovalAssignedTasksWithUserNames().listen(
       (tasks) async {
         final taskIds = tasks.keys.toList();
-        _taskService.getTaskNamesByIds(taskIds).listen((taskNames) {
+        _taskService.getTaskNameDescriptionByIds(taskIds).listen((taskNames) {
           setState(() {
-            // Map task IDs to task names and update tasks
             this.tasks = tasks.entries.map((e) {
               final taskId = e.key;
-              final taskName = taskNames[taskId] ?? 'N/A';
+              final taskData = taskNames[taskId] ?? {};
+              final taskDetails = e.value['taskDetails'] ?? {};
+              final userResponses =
+                  taskDetails['responses'] as List<dynamic>? ?? [];
+              final dateAssigned = taskDetails['dateAssigned'];
+
+              final latestUserResponse = userResponses.isNotEmpty
+                  ? userResponses
+                          .where((response) => response['role'] == 'user')
+                          .last['response'] ??
+                      'N/A'
+                  : 'N/A';
+
               return {
                 'taskId': taskId,
                 'taskDetails': {
-                  'name': taskName,
-                  'deadline': e.value['taskDetails']?['deadline'] ?? 'N/A',
-                  'response': e.value['taskDetails']?['response'] ?? 'N/A',
+                  'name': taskData['title'] ?? 'N/A',
+                  'description': taskData['description'] ?? 'No description',
+                  'deadline': taskDetails['deadline'] ?? 'N/A',
+                  'response': latestUserResponse,
+                  'responses': userResponses,
+                  'dateAssigned': dateAssigned,
                 },
                 'userName': e.value['userName'],
                 'userId': e.value['documentId'],
@@ -164,6 +181,14 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
                               onPass: () {
                                 _confirmAction(index, 'Pass');
                               },
+                              description: filteredTasks[index]['taskDetails']
+                                      ['description'] ??
+                                  'N/A',
+                              userResponses: filteredTasks[index]['taskDetails']
+                                      ['responses'] ??
+                                  [],
+                              dateAssigned: filteredTasks[index]['taskDetails']
+                                  ?['dateAssigned'],
                             );
                           }),
                   if (filteredTasks.length > 5 && !showAllTasks)
@@ -309,17 +334,20 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
                     TextFormField(
                       controller: messageController,
                       decoration: InputDecoration(
-                        labelText: 'Enter your message (Optional)',
+                        labelText: action == 'Reject'
+                            ? 'Enter your message (Required)'
+                            : 'Enter your message (Optional)',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
-                      // validator: (value) {
-                      //   if (value == null || value.trim().isEmpty) {
-                      //     return 'Message cannot be empty';
-                      //   }
-                      //   return null;
-                      // },
+                      validator: (value) {
+                        if (action == 'Reject' &&
+                            (value == null || value.trim().isEmpty)) {
+                          return 'Message is required for rejection';
+                        }
+                        return null;
+                      },
                     ),
                   ],
                 ),
@@ -347,11 +375,13 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
                             });
                             try {
                               if (action == 'Pass') {
-                                await _taskService.passTask(memberId, taskId);
+                                await _taskService.passTask(
+                                    memberId, taskId, messageController.text);
                                 Utils().SuccessSnackBar(context,
                                     "Task marked as completed successfully!");
                               } else if (action == 'Reject') {
-                                await _taskService.rejectTask(memberId, taskId);
+                                await _taskService.rejectTask(
+                                    memberId, taskId, messageController.text);
                                 Utils().InfoSnackBar(context, "Task rejected!");
                               }
 
@@ -361,8 +391,8 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
                               });
                             } catch (error) {
                               print('Error updating task status: $error');
-                              Utils().ErrorSnackBar(
-                                  context, "Failed to update task status.");
+                              // Utils().ErrorSnackBar(
+                              //     context, "Failed to update task status.");
                             } finally {
                               setState(() {
                                 isLoading = false;
@@ -404,23 +434,29 @@ class _EvaluateTasksWidgetState extends State<EvaluateTasksWidget> {
 }
 
 class TaskTableListItem extends StatelessWidget {
-  final String taskId; // Add taskId
+  final String taskId;
   final String taskName;
+  final String description;
+  final userResponses;
   final String deadline;
   final String memberName;
   final String response;
   final void Function() onReject;
   final void Function() onPass;
+  final Timestamp dateAssigned;
 
   const TaskTableListItem({
     super.key,
     required this.taskId, // Add taskId
     required this.taskName,
+    required this.description,
     required this.deadline,
     required this.memberName,
     required this.response,
     required this.onReject,
     required this.onPass,
+    required this.userResponses,
+    required this.dateAssigned,
   });
 
   @override
@@ -431,10 +467,21 @@ class TaskTableListItem extends StatelessWidget {
         children: [
           Row(
             children: [
-              _buildCell(taskName),
-              _buildCell(deadline),
-              _buildCell(memberName),
-              _buildCell(response),
+              _buildCell(
+                  taskName, const TextStyle(color: Colors.white, fontSize: 18)),
+              _buildCell(
+                deadline,
+                TextStyle(
+                  color:
+                      _isDeadlineRed(DateTime.parse(deadline), DateTime.now())
+                          ? Colors.red.shade400
+                          : Colors.white,
+                  fontSize: 18,
+                ),
+              ),
+              _buildCell(memberName,
+                  const TextStyle(color: Colors.white, fontSize: 18)),
+              _chatCell(response, context),
               _buildActionsCell(),
             ],
           ),
@@ -447,20 +494,314 @@ class TaskTableListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildCell(String text) {
+  Widget _buildCell(String text, TextStyle textStyle) {
     return Expanded(
       flex: 3,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Text(
           text,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-          ),
+          style: textStyle,
         ),
       ),
     );
+  }
+
+  bool _isDeadlineRed(DateTime deadline, DateTime now) {
+    // Reset time to compare only dates
+    DateTime deadlineDate =
+        DateTime(deadline.year, deadline.month, deadline.day);
+    DateTime nowDate = DateTime(now.year, now.month, now.day);
+
+    return deadlineDate.isBefore(nowDate);
+  }
+
+  Widget _chatCell(String text, BuildContext context) {
+    return Expanded(
+      flex: 3,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+                overflow: TextOverflow.ellipsis, // Handle overflow
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => _showChatDialog(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+              ),
+              child: const Icon(
+                Icons.message_rounded,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showChatDialog(BuildContext context) {
+    final ScrollController scrollController = ScrollController();
+    final DateTime now = DateTime.now();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        final screenHeight = MediaQuery.of(context).size.height;
+        final dialogWidth = screenWidth * 0.8;
+        final dialogHeight = screenHeight * 0.6;
+        final columnHeight = dialogHeight / 3;
+
+        bool isDeadlineRed(DateTime deadline, DateTime now) {
+          DateTime deadlineDate = DateTime(deadline.year, deadline.month, deadline.day);
+          DateTime nowDate = DateTime(now.year, now.month, now.day);
+
+          return deadlineDate.isBefore(nowDate);
+        }
+
+        return AlertDialog(
+          backgroundColor: customLightGrey,
+          title: RichText(
+            text: TextSpan(
+              children: [
+                const TextSpan(
+                  text: 'Chat - ',
+                  style: TextStyle(fontSize: 24, color: Colors.white),
+                ),
+                TextSpan(
+                  text: taskName,
+                  style: const TextStyle(fontSize: 24, color: customAqua),
+                ),
+              ],
+            ),
+          ),
+          content: SizedBox(
+            width: dialogWidth,
+            height: dialogHeight,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: columnHeight,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'Task Description: ',
+                                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                                ),
+                                TextSpan(
+                                  text: description,
+                                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'Assigned to: ',
+                                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                                ),
+                                TextSpan(
+                                  text: memberName,
+                                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'Date Assigned: ',
+                                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                                ),
+                                TextSpan(
+                                  text: DateFormat.yMMMd().format(dateAssigned.toDate()),
+                                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'Deadline: ',
+                                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                                ),
+                                TextSpan(
+                                  text: DateFormat.yMMMd().format(DateTime.parse(deadline)),
+                                  style: TextStyle(
+                                    color: isDeadlineRed(DateTime.parse(deadline), DateTime.now())
+                                        ? Colors.red.shade400
+                                        : Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10,),
+                  const Divider(color: Colors.white70),
+                  const SizedBox(height: 10,),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          color: Color(0xFF2A3038),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: _buildChatMessages(dialogWidth),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close', style: TextStyle(color: customAqua)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  List<Widget> _buildChatMessages(double dialogWidth) {
+    final List<Widget> chatMessages = [];
+    DateTime? previousDate;
+
+    for (var response in userResponses) {
+      final DateTime timestamp = DateTime.fromMillisecondsSinceEpoch(
+          response['timestamp'].seconds * 1000);
+      final String formattedDate = _formatChatDate(timestamp);
+      final String role = response['role'] ?? 'Unknown';
+      final String text = response['response'] ?? '';
+
+      if (previousDate == null || !_isSameDate(previousDate, timestamp)) {
+        chatMessages.add(
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                formattedDate,
+                style: const TextStyle(color: Colors.white70, fontSize: 16),
+              ),
+            ),
+          ),
+        );
+      }
+
+      chatMessages.add(
+        Align(
+          alignment:
+              role == 'user' ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
+            constraints: BoxConstraints(maxWidth: dialogWidth * 0.6),
+            margin: const EdgeInsets.symmetric(vertical: 4.0),
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: const Color(0xFF444951),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '${role == 'admin' ? role : memberName} ',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '(${DateFormat('h:mm a').format(timestamp)})',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  text,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      previousDate = timestamp;
+    }
+
+    return chatMessages;
+  }
+
+  String _formatChatDate(DateTime date) {
+    final DateTime now = DateTime.now();
+    final DateTime yesterday = now.subtract(const Duration(days: 1));
+
+    if (_isSameDate(date, now)) {
+      return 'Today';
+    } else if (_isSameDate(date, yesterday)) {
+      return 'Yesterday';
+    } else {
+      return DateFormat('dd-MM-yyyy').format(date);
+    }
+  }
+
+  bool _isSameDate(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   Widget _buildActionsCell() {

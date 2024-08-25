@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/SRC/COMMON/MODEL/Member.dart';
-import 'package:taskify/SRC/MOBILE/SCREENS/HOME/VIEWS/1_home_view.dart';
-import 'package:taskify/SRC/MOBILE/SCREENS/HOME/VIEWS/3_setting_view.dart';
-import 'package:taskify/SRC/MOBILE/SCREENS/HOME/VIEWS/TASK/2_task_view.dart';
+import 'package:taskify/SRC/MOBILE/SCREENS/HOME/VIEWS/HOME/home_view.dart';
+import 'package:taskify/SRC/MOBILE/SCREENS/HOME/VIEWS/SETTINGS/setting_view.dart';
+import 'package:taskify/SRC/MOBILE/SCREENS/HOME/VIEWS/TASK/task_view.dart';
 import 'package:taskify/THEME/theme.dart';
 
 class HomeScreen extends StatefulWidget {

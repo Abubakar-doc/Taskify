@@ -56,4 +56,15 @@ class DepartmentService {
     final querySnapshot = await _departmentsCollection.where('name', isEqualTo: name).get();
     return querySnapshot.docs.isNotEmpty;
   }
+
+  Future<String?> getDepartmentNameById(String departmentId) async {
+    final docSnapshot = await _departmentsCollection.doc(departmentId).get();
+    if (docSnapshot.exists && docSnapshot.data() != null) {
+      final data = docSnapshot.data() as Map<String, dynamic>;
+      return data['name'] as String?;
+    } else {
+      return null; // Return null if no department is found
+    }
+  }
+
 }

@@ -5,7 +5,7 @@ class UserModel {
   final String name;
   final String email;
   final String departmentId;
-  final Map<String, Map<String, String>> tasks;
+  final Map<String, Map<String, dynamic>> tasks;
   String status;
   final DateTime createdAt;
   DateTime updatedAt;
@@ -18,8 +18,8 @@ class UserModel {
     this.tasks = const {},
     this.status = 'pending',
     required this.createdAt,
-    required this.updatedAt,
-  });
+    DateTime? updatedAt,
+  }) : updatedAt = updatedAt ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
     return {
@@ -47,18 +47,39 @@ class UserModel {
     );
   }
 
-  // Helper method to parse tasks
-  static Map<String, Map<String, String>> _parseTasks(dynamic tasks) {
+  // Helper method to parse tasks with simplified responses
+  static Map<String, Map<String, dynamic>> _parseTasks(dynamic tasks) {
     if (tasks is Map) {
-      final Map<String, Map<String, String>> parsedTasks = {};
-      tasks.forEach((key, value) {
-        if (value is Map) {
-          parsedTasks[key] = Map<String, String>.from(value);
+      final Map<String, Map<String, dynamic>> parsedTasks = {};
+      tasks.forEach((taskId, taskData) {
+        if (taskData is Map) {
+          parsedTasks[taskId] = {
+            'status': taskData['status'] ?? '',
+            'deadline': taskData['deadline'] ?? '',
+            'dateAssigned': _parseTimestamp(taskData['dateAssigned']),
+            'dateCompleted': _parseTimestamp(taskData['dateCompleted']),
+            'responses': _parseResponses(taskData['responses'] ?? []),
+          };
         }
       });
       return parsedTasks;
     }
     return {};
+  }
+
+  // Helper method to parse responses
+  static List<Map<String, dynamic>> _parseResponses(dynamic responses) {
+    if (responses is List) {
+      return responses
+          .where((response) => response is Map<String, dynamic>)
+          .map((response) => {
+        'role': response['role'] ?? '',
+        'response': response['response'] ?? '',
+        'timestamp': _parseTimestamp(response['timestamp']),
+      })
+          .toList();
+    }
+    return [];
   }
 
   // Helper method to parse timestamp

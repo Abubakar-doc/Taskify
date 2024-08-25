@@ -80,7 +80,7 @@ class AuthService {
   }
 
   Future<void> isSignedIn(BuildContext context) async {
-    await Future.delayed(const Duration(seconds: 2), () {});
+    await Future.delayed(const Duration(seconds: 1), () {});
 
     User? user = _auth.currentUser;
 
