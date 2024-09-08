@@ -64,8 +64,7 @@ This repository contains the following folders:
 Check out the videos showcasing the mobile and web app functionalities:
 
 ### Mobile App and Web Admin Panel Demo
-
-https://github.com/user-attachments/assets/16eb0d9a-46ab-4bbb-93b0-4ed69a1b8ca9
+https://github.com/user-attachments/assets/32dc2bb1-cf1c-4f29-ac5d-6d27bca028b1
 
 ## 🔧 Installation and Setup
 
