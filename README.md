@@ -73,7 +73,7 @@ Check out the videos showcasing the mobile and web app functionalities:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/taskify.git
+   git clone [https://github.com/yourusername/taskify.git](https://github.com/Abubakar-doc/taskify)
    ```
    
 2. Navigate to the project directory:
