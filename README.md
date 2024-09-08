@@ -63,11 +63,8 @@ This repository contains the following folders:
 ## 🎬 Demo Videos
 Check out the videos showcasing the mobile and web app functionalities:
 
-### Mobile App Demo
+### Mobile App and Web Admin Panel Demo
 [![Taskify Mobile Demo](https://img.youtube.com/vi/your-mobile-demo-video-url/0.jpg)](https://www.youtube.com/watch?v=your-mobile-demo-video-url)
-
-### Web Admin Panel Demo
-[![Taskify Web Admin Demo](https://img.youtube.com/vi/your-web-demo-video-url/0.jpg)](https://www.youtube.com/watch?v=your-web-demo-video-url)
 
 ## 🔧 Installation and Setup
 
