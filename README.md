@@ -95,10 +95,6 @@ Check out the videos showcasing the mobile and web app functionalities:
    flutter run
    ```
 
-## 📜 License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
 ---
 
-Stay organized, stay productive with **Taskify**! 💼  
-Feel free to contribute and submit issues or pull requests to improve the project. 😊
+Stay organized, stay productive with **Taskify**! 💼
